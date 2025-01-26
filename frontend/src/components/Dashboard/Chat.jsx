@@ -38,13 +38,6 @@ function Chat() {
   const bgColor = useColorModeValue('white', 'gray.800');
   const userMsgColor = '#d9fdd3';
   const botMsgColor = 'white';
-<<<<<<< HEAD
-  const titleColor = useColorModeValue(
-    'rgba(255, 255, 255, 0.3)',
-    'rgba(0, 0, 0, 0.7)'
-  );
-=======
->>>>>>> content-test
 
   const handleSendMessage = async () => {
     if (inputMessage.trim() !== '') {
