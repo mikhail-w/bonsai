@@ -10,6 +10,7 @@ import {
   ReviewsSection,
   GlobeSection,
   NewsLetterSection,
+  AboutBonsaisSection,
 } from '@homepageSections';
 import FeaturesSection from './homepage-sections/FeaturesSection/FeaturesSection';
 // import FeaturesSection from './homepage-sections/FeaturesSection';
@@ -26,6 +27,7 @@ function HomePage() {
   return (
     <>
       <HeroSection />
+      <AboutBonsaisSection />
       <FeaturedProductsSection />
       <Box height="120px" bg="transparent" />
       <BenefitsSection />

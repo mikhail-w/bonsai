@@ -5,3 +5,4 @@ export { default as ExpandingCardsSection } from './ExpandingCardsSection';
 export { default as ReviewsSection } from './ReviewsSection';
 export { default as GlobeSection } from './GlobeSection';
 export { default as NewsLetterSection } from './NewsLetterSection';
+export { default as AboutBonsaisSection } from './AboutBonsaisSection';
