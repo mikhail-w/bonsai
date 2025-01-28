@@ -157,26 +157,57 @@ AWS_S3_CUSTOM_DOMAIN=your_s3_custom_domain
 
 ### User Dashboard
 
+#### Light Mode
+
 <div align="center">
-  <img src="./frontend/src/assets/images/readme/readme007.png" alt="User Dashboard" width="80%">
-  <img src="./frontend/src/assets/images/readme/readme008.png" alt="User Dashboard" width="80%">
-</div>  
-Personalized user dashboard with avatar updates, weather insights, and Zen quotes.
+  <img src="./frontend/src/assets/images/readme/readme007.png" alt="User Dashboard (Light Mode)" width="80%">
+</div>
+
+#### Dark Mode
+
+<div align="center">
+  <img src="./frontend/src/assets/images/readme/readme008.png" alt="User Dashboard (Dark Mode) " width="80%" >
+</div>
+<br><br>
+Personalized user dashboard with avatar updates, weather insights, and Zen
+quotes.
 
 ---
 
 ### Additional Interactive Features
 
-<div align="center">
-  <img src="./frontend/src/assets/images/readme/readme009.png" alt="Interactive Features" width="80%">
-  <img src="./frontend/src/assets/images/readme/readme0010a.png" alt="Interactive Features" width="80%">
-  <img src="./frontend/src/assets/images/readme/readme0011.png" alt="Interactive Features" width="80%">
-  <img src="./frontend/src/assets/images/readme/readme0012.png" alt="Interactive Features" width="80%">
-  <img src="./frontend/src/assets/images/readme/readme0013.png" alt="Interactive Features" width="80%">
-</div>  
-Advanced 3D model interactions, augmented reality, google maps integration, plant ID, and more to enhance the user experience.
+#### Advanced 3D Model Interactions
 
----
+<div align="center">
+  <img src="./frontend/src/assets/images/readme/readme009.png" alt="Advanced 3D Model Interactions" width="80%">
+</div>
+
+#### Google Maps Integration
+
+<div align="center">
+  <img src="./frontend/src/assets/images/readme/readme0010a.png" alt="Google Maps Integration" width="80%">
+</div>
+
+#### Plant and Image Identification
+
+<div align="center">
+  <img src="./frontend/src/assets/images/readme/readme0011.png" alt="Plant Identification" width="80%">
+</div>
+
+#### View Bonsai in Augmented Reality
+
+<div align="center">
+  <img src="./frontend/src/assets/images/readme/readme0012.png" alt="Augmented Reality" width="80%">
+</div>
+
+#### Chatbot Integration
+
+<div align="center">
+  <img src="./frontend/src/assets/images/readme/readme0013.png" alt="Chatbot Integration" width="80%">
+</div>
+
+Advanced 3D model interactions, augmented reality, Google Maps integration,
+plant identification, and a chatbot feature enhance the overall user experience.
 
 ## Installation
 
