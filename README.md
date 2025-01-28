@@ -73,6 +73,78 @@ ultimate platform for bonsai lovers. Visit the live application at
 - **Authentication:** Secure user authentication and authorization powered by
   JWT.
 
+## Environment Variables
+
+### Frontend
+
+Create a `.env` file in the `frontend` directory with the following:
+
+```env
+# Backend API URL
+VITE_API_URL=your_api_url
+
+# Weather API Key
+VITE_WEATHER_API_KEY=your_open-weather_api_key
+
+# PayPal Client ID
+VITE_PAYPAL_CLIENT_ID=your_paypal_client_id
+
+# Google Maps API Key
+VITE_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
+
+# Plant ID (Google Cloud Vision) API Key
+VITE_GOOGLE_CLOUD_VISION_API_KEY=your_google_cloud_vision_api_key
+
+# AWS S3 Configuration
+VITE_S3_BUCKET=your_s3_bucket_name
+VITE_S3_REGION=your_s3_region
+VITE_S3_PATH=your_s3_bucket_path
+
+# Base API URL
+VITE_API_BASE_URL=your_api_base_url
+```
+
+### Backend
+
+Create a `.env` file in the `backend` directory with the following:
+
+```
+OPENAI_API_KEY=your_openai_api_key
+
+DJANGO_SECRET_KEY=your_django_secret_key
+
+DJANGO_ALLOWED_HOSTS=your_django_allowed_hosts
+
+DJANGO_DEBUG=True
+
+# Database Configuration
+
+DB_USER=admin
+DB_PASSWORD=password
+DB_NAME=bonsai_store
+DB_HOST=localhost
+DB_PORT=5432
+
+# AWS S3 Configuration
+
+AWS_ACCESS_KEY_ID=your_aws_access_key_id
+AWS_SECRET_ACCESS_KEY=your_aws_secret_access_key
+AWS_STORAGE_BUCKET_NAME=your_storage_bucket_name
+AWS_S3_REGION_NAME=your_storage_bucket_region
+AWS_S3_CUSTOM_DOMAIN=your_s3_custom_domain
+```
+
+### Notes:
+
+1. Replace all `your_*` placeholders with your actual keys, secrets, and URLs.
+2. Ensure `.env` files are **excluded from version control** by adding them to
+   `.gitignore`.
+3. Use different values for development and production environments as needed.
+
+## Preview
+
+### Demo
+
 <table>
   <tr>
 <br><br><br>
@@ -177,7 +249,8 @@ npm run dev
 Bonsai is deployed on AWS using the following services:
 
 - **Frontend:** Hosted on AWS S3 with CloudFront for content delivery.
-- **Backend:** Deployed on an EC2 instance with Nginx and Gunicorn.
+- **Backend:** Both the Postgres database and the Django backend are deployed on
+  a AWS EC2 instance with Nginx and Gunicorn.
 - **Domain:** Registered with AWS Route 53 and configured to support HTTPS.
 
 ---
