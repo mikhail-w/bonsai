@@ -50,7 +50,8 @@ ultimate platform for bonsai lovers. Visit the live application at
 ## Features
 
 - **Responsive Design:** Built with React and styled using Chakra UI for a
-  beautiful and intuitive user experience across devices.
+  beautiful and intuitive user experience across both mobile and desktop
+  devices.
 - **Interactive Components:** Includes an elegant shopping cart, dynamic product
   filtering, and search functionality.
 - **PayPal API :** Secure payment API integration.
@@ -69,7 +70,6 @@ ultimate platform for bonsai lovers. Visit the live application at
   and Django REST Framework.
 - **Image Management:** Efficient handling of product and user-uploaded images
   using AWS S3.
-- **Payment Processing:** Integrated with PayPal API for seamless transactions.
 - **Authentication:** Secure user authentication and authorization powered by
   JWT.
 
