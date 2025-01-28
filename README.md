@@ -55,7 +55,6 @@ ultimate platform for bonsai lovers. Visit the live application at
 - **Interactive Components:** Includes an elegant shopping cart, dynamic product
   filtering, and search functionality.
 - **PayPal API :** Secure payment API integration.
-- **Weather API :** to check local conditions for optimal bonsai care.
 - **Zen Quotes API :** to inspire users with peaceful quotes.
 - **OpenAI API :** for an intelligent chatbot experience.
 - **Weather API :** to check local conditions for optimal bonsai care.
