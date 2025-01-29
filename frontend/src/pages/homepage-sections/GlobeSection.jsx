@@ -42,7 +42,12 @@ const GlobeSection = () => {
 
   return (
     <Box marginBottom={'100px'}>
-      <Center width={containerSize} height={containerSize} margin="auto">
+      <Center
+        cursor={'pointer'}
+        width={containerSize}
+        height={containerSize}
+        margin="auto"
+      >
         {/* Chakra-based spinner outside of Canvas */}
         <Suspense fallback={<LoadingFallback />}>
           {/* R3F Canvas, containing only Three.js-compatible components */}
