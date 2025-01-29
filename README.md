@@ -50,11 +50,11 @@ ultimate platform for bonsai lovers. Visit the live application at
 ## Features
 
 - **Responsive Design:** Built with React and styled using Chakra UI for a
-  beautiful and intuitive user experience across devices.
+  beautiful and intuitive user experience across both mobile and desktop
+  devices.
 - **Interactive Components:** Includes an elegant shopping cart, dynamic product
   filtering, and search functionality.
 - **PayPal API :** Secure payment API integration.
-- **Weather API :** to check local conditions for optimal bonsai care.
 - **Zen Quotes API :** to inspire users with peaceful quotes.
 - **OpenAI API :** for an intelligent chatbot experience.
 - **Weather API :** to check local conditions for optimal bonsai care.
@@ -69,9 +69,80 @@ ultimate platform for bonsai lovers. Visit the live application at
   and Django REST Framework.
 - **Image Management:** Efficient handling of product and user-uploaded images
   using AWS S3.
-- **Payment Processing:** Integrated with PayPal API for seamless transactions.
 - **Authentication:** Secure user authentication and authorization powered by
   JWT.
+
+## Environment Variables
+
+### Frontend
+
+Create a `.env` file in the `frontend` directory with the following:
+
+```env
+# Backend API URL
+VITE_API_URL=your_api_url
+
+# Weather API Key
+VITE_WEATHER_API_KEY=your_open-weather_api_key
+
+# PayPal Client ID
+VITE_PAYPAL_CLIENT_ID=your_paypal_client_id
+
+# Google Maps API Key
+VITE_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
+
+# Plant ID (Google Cloud Vision) API Key
+VITE_GOOGLE_CLOUD_VISION_API_KEY=your_google_cloud_vision_api_key
+
+# AWS S3 Configuration
+VITE_S3_BUCKET=your_s3_bucket_name
+VITE_S3_REGION=your_s3_region
+VITE_S3_PATH=your_s3_bucket_path
+
+# Base API URL
+VITE_API_BASE_URL=your_api_base_url
+```
+
+### Backend
+
+Create a `.env` file in the `backend` directory with the following:
+
+```
+OPENAI_API_KEY=your_openai_api_key
+
+DJANGO_SECRET_KEY=your_django_secret_key
+
+DJANGO_ALLOWED_HOSTS=your_django_allowed_hosts
+
+DJANGO_DEBUG=True
+
+# Database Configuration
+
+DB_USER=admin
+DB_PASSWORD=password
+DB_NAME=bonsai_store
+DB_HOST=localhost
+DB_PORT=5432
+
+# AWS S3 Configuration
+
+AWS_ACCESS_KEY_ID=your_aws_access_key_id
+AWS_SECRET_ACCESS_KEY=your_aws_secret_access_key
+AWS_STORAGE_BUCKET_NAME=your_storage_bucket_name
+AWS_S3_REGION_NAME=your_storage_bucket_region
+AWS_S3_CUSTOM_DOMAIN=your_s3_custom_domain
+```
+
+### Notes:
+
+1. Replace all `your_*` placeholders with your actual keys, secrets, and URLs.
+2. Ensure `.env` files are **excluded from version control** by adding them to
+   `.gitignore`.
+3. Use different values for development and production environments as needed.
+
+## Preview
+
+### Demo
 
 <table>
   <tr>
@@ -85,26 +156,57 @@ ultimate platform for bonsai lovers. Visit the live application at
 
 ### User Dashboard
 
+#### Light Mode
+
 <div align="center">
-  <img src="./frontend/src/assets/images/readme/readme007.png" alt="User Dashboard" width="80%">
-  <img src="./frontend/src/assets/images/readme/readme008.png" alt="User Dashboard" width="80%">
-</div>  
-Personalized user dashboard with avatar updates, weather insights, and Zen quotes.
+  <img src="./frontend/src/assets/images/readme/readme007.png" alt="User Dashboard (Light Mode)" width="80%">
+</div>
+
+#### Dark Mode
+
+<div align="center">
+  <img src="./frontend/src/assets/images/readme/readme008.png" alt="User Dashboard (Dark Mode) " width="80%" >
+</div>
+<br><br>
+Personalized user dashboard with avatar updates, weather insights, and Zen
+quotes.
 
 ---
 
 ### Additional Interactive Features
 
-<div align="center">
-  <img src="./frontend/src/assets/images/readme/readme009.png" alt="Interactive Features" width="80%">
-  <img src="./frontend/src/assets/images/readme/readme0010a.png" alt="Interactive Features" width="80%">
-  <img src="./frontend/src/assets/images/readme/readme0011.png" alt="Interactive Features" width="80%">
-  <img src="./frontend/src/assets/images/readme/readme0012.png" alt="Interactive Features" width="80%">
-  <img src="./frontend/src/assets/images/readme/readme0013.png" alt="Interactive Features" width="80%">
-</div>  
-Advanced 3D model interactions, augmented reality, google maps integration, plant ID, and more to enhance the user experience.
+#### Advanced 3D Model Interactions
 
----
+<div align="center">
+  <img src="./frontend/src/assets/images/readme/readme009.png" alt="Advanced 3D Model Interactions" width="80%">
+</div>
+
+#### Google Maps Integration
+
+<div align="center">
+  <img src="./frontend/src/assets/images/readme/readme0010a.png" alt="Google Maps Integration" width="80%">
+</div>
+
+#### Plant and Image Identification
+
+<div align="center">
+  <img src="./frontend/src/assets/images/readme/readme0011.png" alt="Plant Identification" width="80%">
+</div>
+
+#### View Bonsai in Augmented Reality
+
+<div align="center">
+  <img src="./frontend/src/assets/images/readme/readme0012.png" alt="Augmented Reality" width="80%">
+</div>
+
+#### Chatbot Integration
+
+<div align="center">
+  <img src="./frontend/src/assets/images/readme/readme0013.png" alt="Chatbot Integration" width="80%">
+</div>
+
+Advanced 3D model interactions, augmented reality, Google Maps integration,
+plant identification, and a chatbot feature enhance the overall user experience.
 
 ## Installation
 
@@ -177,7 +279,8 @@ npm run dev
 Bonsai is deployed on AWS using the following services:
 
 - **Frontend:** Hosted on AWS S3 with CloudFront for content delivery.
-- **Backend:** Deployed on an EC2 instance with Nginx and Gunicorn.
+- **Backend:** Both the Postgres database and the Django backend are deployed on
+  a AWS EC2 instance with Nginx and Gunicorn.
 - **Domain:** Registered with AWS Route 53 and configured to support HTTPS.
 
 ---
