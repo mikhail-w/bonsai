@@ -17,7 +17,7 @@ import t2 from '../assets/images/team/daniel.jpg';
 import t3 from '../assets/images/team/dustin.png';
 import t4 from '../assets/images/team/gary.jpg';
 import t5 from '../assets/images/team/momo.jpg';
-import watermark from '../assets/images/logo.png'; // Replace with your uploaded watermark file
+import watermark from '../assets/images/logo.png';
 
 const teamMembers = [
   {
@@ -96,7 +96,7 @@ const AboutPage = () => {
           gap={10}
           maxW="1200px"
           mx="auto"
-          mb={20} // Add margin bottom to create space for watermark
+          mb={20}
         >
           {/* Team member cards with higher z-index */}
           {teamMembers.map((member, index) => (

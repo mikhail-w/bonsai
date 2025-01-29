@@ -8,6 +8,8 @@ import {
 } from '@chakra-ui/react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+const MotionRect = motion.rect;
+
 const YinYang = () => {
   const [activeSection, setActiveSection] = useState(null);
   const [isMobile] = useMediaQuery('(max-width: 768px)');
@@ -24,82 +26,116 @@ const YinYang = () => {
 
   const handleInteraction = section => {
     if (isMobile) {
-      setActiveSection(prev => (prev === section ? null : section)); // Toggle on click for mobile
+      // Toggle on tap for mobile
+      setActiveSection(prev => (prev === section ? null : section));
     } else {
-      setActiveSection(section); // Hover behavior for non-mobile
+      // Set on hover for desktop
+      setActiveSection(section);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (!isMobile) {
+      setActiveSection(null);
     }
   };
 
   return (
     <VStack spacing={8} mt={-4} mb={12} align="center">
+      {/* Instruction Text */}
+      <Text
+        mt={6}
+        fontSize={{ base: 'lg', md: 'xl' }}
+        color={textColor}
+        textAlign="center"
+        opacity={0.7}
+      >
+        {isMobile
+          ? 'Tap the symbol to learn about us'
+          : 'Hover over the symbol to learn about us'}
+      </Text>
+
       {/* Yin-Yang Symbol */}
       <Box position="relative" width="200px" height="200px">
         <svg viewBox="0 0 240 240" width="100%" height="100%">
           <defs>
+            {/* Gradient Colors */}
             <linearGradient
-              id="blackGradient"
+              id="hoverBlackGradient"
               x1="0%"
-              y1="0%"
-              x2="100%"
+              y1="100%"
+              x2="0%"
               y2="0%"
             >
-              <stop
-                offset="0%"
-                style={{ stopColor: '#55c57a', stopOpacity: 1 }}
-              />
-              <stop
-                offset="100%"
-                style={{ stopColor: '#28b485', stopOpacity: 1 }}
-              />
+              <stop offset="0%" stopColor="rgba(50, 205, 50, 0.8)" />
+              <stop offset="100%" stopColor="rgba(11, 163, 96, 0.8)" />
             </linearGradient>
+
             <linearGradient
-              id="whiteGradient"
+              id="hoverWhiteGradient"
               x1="0%"
-              y1="0%"
-              x2="100%"
+              y1="100%"
+              x2="0%"
               y2="0%"
             >
-              <stop
-                offset="0%"
-                style={{ stopColor: '#28b485', stopOpacity: 1 }}
-              />
-              <stop
-                offset="100%"
-                style={{ stopColor: '#55c57a', stopOpacity: 1 }}
-              />
+              <stop offset="2.3%" stopColor="rgba(168, 251, 60, 0.9)" />
+              <stop offset="98.3%" stopColor="rgb(56, 172, 70)" />
             </linearGradient>
+
+            {/* Masks for Animation */}
+            <mask id="blackFillMask">
+              <rect width="240" height="240" fill="black" />
+              <MotionRect
+                width="240"
+                height="240"
+                fill="white"
+                animate={{ y: activeSection === 'black' ? 0 : 240 }}
+                transition={{ duration: 0.8, ease: 'easeInOut' }}
+              />
+            </mask>
+
+            <mask id="whiteFillMask">
+              <rect width="240" height="240" fill="black" />
+              <MotionRect
+                width="240"
+                height="240"
+                fill="white"
+                animate={{ y: activeSection === 'white' ? 0 : 240 }}
+                transition={{ duration: 0.8, ease: 'easeInOut' }}
+              />
+            </mask>
           </defs>
 
-          {/* Base circle */}
+          {/* Base Circle */}
           <circle
             cx="120"
             cy="120"
             r="115"
-            fill="white"
+            fill="#ffffff92"
             stroke="black"
-            strokeWidth="2"
+            strokeWidth="1"
           />
 
-          {/* Green Half (default color) */}
+          {/* Green Half - Works on Hover (Desktop) & Click (Mobile) */}
           <path
             d="M120 5 A115 115 0 0 1 120 235 A57.5 57.5 0 0 1 120 120 A57.5 57.5 0 0 0 120 5Z"
-            fill={activeSection === 'black' ? 'url(#blackGradient)' : '#f6f6f6'}
+            fill="url(#hoverBlackGradient)"
+            mask="url(#blackFillMask)"
             cursor="pointer"
+            onMouseEnter={() => handleInteraction('black')}
+            onMouseLeave={handleMouseLeave}
             onClick={() => handleInteraction('black')}
-            onMouseEnter={() => !isMobile && handleInteraction('black')}
-            onMouseLeave={() => !isMobile && setActiveSection(null)}
-            style={{ transition: 'fill 0.3s ease-in-out' }}
           />
 
-          {/* White Half */}
+          {/* White Half - Works on Hover (Desktop) & Click (Mobile) */}
           <path
             d="M120 235 A115 115 0 0 1 120 5 A57.5 57.5 0 0 1 120 120 A57.5 57.5 0 0 0 120 235Z"
-            fill={activeSection === 'white' ? 'url(#whiteGradient)' : 'white'}
+            fill="url(#hoverWhiteGradient)"
+            mask="url(#whiteFillMask)"
             cursor="pointer"
+            onMouseEnter={() => handleInteraction('white')}
+            onMouseLeave={handleMouseLeave}
             onClick={() => handleInteraction('white')}
-            onMouseEnter={() => !isMobile && handleInteraction('white')}
-            onMouseLeave={() => !isMobile && setActiveSection(null)}
-            style={{ transition: 'fill 0.3s ease-in-out' }}
           />
 
           {/* Dots */}
@@ -107,40 +143,38 @@ const YinYang = () => {
             cx="120"
             cy="62.5"
             r="12"
-            fill={activeSection === 'black' ? '#28b485' : 'black'}
+            cursor="pointer"
+            onMouseEnter={() => handleInteraction('white')}
+            onMouseLeave={handleMouseLeave}
+            onClick={() => handleInteraction('white')}
+            fill={
+              activeSection === 'black'
+                ? '#28b485'
+                : activeSection
+                ? 'white'
+                : 'transparent'
+            }
+            transition="fill 0.3s ease-in-out"
           />
           <circle
             cx="120"
             cy="177.5"
             r="12"
-            fill={activeSection === 'white' ? 'gray' : 'white'}
+            cursor="pointer"
+            onMouseEnter={() => handleInteraction('black')}
+            onMouseLeave={handleMouseLeave}
+            onClick={() => handleInteraction('black')}
+            fill={
+              activeSection === 'white'
+                ? 'rgba(50, 205, 50, 0.8)'
+                : activeSection
+                ? 'white'
+                : 'transparent'
+            }
+            transition="fill 0.3s ease-in-out"
           />
         </svg>
       </Box>
-
-      {/* Instruction Text with Animation */}
-      <AnimatePresence mode="wait">
-        {!activeSection && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.5, ease: 'easeOut' }}
-          >
-            <Text
-              mt={6}
-              fontSize={{ base: 'lg', md: 'xl' }}
-              color={textColor}
-              textAlign="center"
-              opacity={0.7}
-            >
-              {isMobile
-                ? 'Tap the symbol to learn about us'
-                : 'Hover over the symbol to learn about us'}
-            </Text>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Smoothly Transitioning Text Container */}
       <Box
@@ -165,19 +199,16 @@ const YinYang = () => {
             style={{ position: 'absolute', width: '100%' }}
           >
             <Text
-              fontSize={{ base: 'md', md: '2xl' }}
+              fontFamily={'lato'}
+              fontWeight={300}
+              fontSize={{ base: 'lg', md: '3xl' }}
               color={textColor}
               textAlign="center"
-              lineHeight="1.7"
-              fontFamily="'Poppins', sans-serif"
-              fontWeight={300}
-              mx="auto"
-              maxW={{ base: '90%', md: 'container.md' }}
             >
-              {activeSection
-                ? activeSection === 'black'
-                  ? firstParagraph
-                  : secondParagraph
+              {activeSection === 'black'
+                ? firstParagraph
+                : activeSection === 'white'
+                ? secondParagraph
                 : defaultParagraph}
             </Text>
           </motion.div>

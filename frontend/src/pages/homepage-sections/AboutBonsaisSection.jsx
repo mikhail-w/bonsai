@@ -13,7 +13,7 @@ const AboutBonsaisSection = () => {
       px={{ base: 5, md: 10 }}
       transition="background-color 0.3s ease-in-out"
     >
-      <CustomHeading>Discover the Art of Bonsai</CustomHeading>
+      <CustomHeading size={'2xl'}>Discover the Art of Bonsai</CustomHeading>
       <YinYangHover />
     </Box>
   );
