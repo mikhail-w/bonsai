@@ -37,5 +37,5 @@ jobs:
 
       - name: Deploy index.html and assets to S3
         run: |
-          aws s3 cp frontend/dist/index.html s3://${{ secrets.AWS_S3_BUCKET }}/index.html --acl public-read
-          aws s3 sync frontend/dist/assets s3://${{ secrets.AWS_S3_BUCKET }}/assets --acl public-read
+          aws s3 cp frontend/dist/index.html s3://${{ secrets.AWS_S3_BUCKET }}/index.html
+          aws s3 sync frontend/dist/assets s3://${{ secrets.AWS_S3_BUCKET }}/assets
