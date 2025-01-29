@@ -26,10 +26,9 @@ const YinYang = () => {
 
   const handleInteraction = section => {
     if (isMobile) {
-      // Toggle on tap for mobile
+      // Ensure tapping one side activates it and deactivates the other
       setActiveSection(prev => (prev === section ? null : section));
     } else {
-      // Set on hover for desktop
       setActiveSection(section);
     }
   };
@@ -56,7 +55,19 @@ const YinYang = () => {
       </Text>
 
       {/* Yin-Yang Symbol */}
-      <Box position="relative" width="200px" height="200px">
+      <Box
+        position="relative"
+        width="200px"
+        height="200px"
+        sx={{
+          svg: {
+            WebkitTapHighlightColor: 'transparent',
+          },
+          'svg path, svg circle': {
+            outline: 'none',
+          },
+        }}
+      >
         <svg viewBox="0 0 240 240" width="100%" height="100%">
           <defs>
             {/* Gradient Colors */}
@@ -116,7 +127,7 @@ const YinYang = () => {
             strokeWidth="1"
           />
 
-          {/* Green Half - Works on Hover (Desktop) & Click (Mobile) */}
+          {/* Green Half */}
           <path
             d="M120 5 A115 115 0 0 1 120 235 A57.5 57.5 0 0 1 120 120 A57.5 57.5 0 0 0 120 5Z"
             fill="url(#hoverBlackGradient)"
@@ -127,7 +138,7 @@ const YinYang = () => {
             onClick={() => handleInteraction('black')}
           />
 
-          {/* White Half - Works on Hover (Desktop) & Click (Mobile) */}
+          {/* White Half */}
           <path
             d="M120 235 A115 115 0 0 1 120 5 A57.5 57.5 0 0 1 120 120 A57.5 57.5 0 0 0 120 235Z"
             fill="url(#hoverWhiteGradient)"
