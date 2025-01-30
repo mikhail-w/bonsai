@@ -25,12 +25,7 @@ const YinYang = () => {
     "Whether you're seeking to bring tranquility to your home or searching for the perfect gift, We are your destination for all things bonsai. Explore our shop, dive into our care guides, and join a community of bonsai lovers worldwide.";
 
   const handleInteraction = section => {
-    if (isMobile) {
-      // Ensure tapping one side activates it and deactivates the other
-      setActiveSection(prev => (prev === section ? null : section));
-    } else {
-      setActiveSection(section);
-    }
+    setActiveSection(prev => (prev !== section ? section : null));
   };
 
   const handleMouseLeave = () => {
