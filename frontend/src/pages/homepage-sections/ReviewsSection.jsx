@@ -75,7 +75,7 @@ const ReviewCard = ({ review }) => {
   const bgColor = useColorModeValue('white', 'gray.800');
   const textColor = useColorModeValue('gray.700', 'gray.200');
   const titleColor = useColorModeValue('gray.800', 'white');
-  const isMobile = useBreakpointValue({ base: true, md: false });
+  const isMobile = useBreakpointValue({ base: true, lg: false });
 
   return (
     <Box
@@ -84,8 +84,8 @@ const ReviewCard = ({ review }) => {
       boxShadow="lg"
       p={6}
       textAlign="center"
-      width={isMobile ? 'calc(100vw - 48px)' : '350px'}
-      maxW={isMobile ? 'none' : '350px'}
+      width={isMobile ? 'calc(100vw - 80px)' : '350px'}
+      maxW={isMobile ? '100%' : '350px'}
       minH="400px"
       m="auto"
       position="relative"
@@ -141,7 +141,7 @@ const ReviewCard = ({ review }) => {
 };
 
 const ReviewsSection = () => {
-  const isMobile = useBreakpointValue({ base: true, md: false });
+  const isMobile = useBreakpointValue({ base: true, lg: false });
   const sectionBg = useColorModeValue('gray.50', 'gray.900');
   const titleColor = useColorModeValue('green.600', 'green.400');
   const dotColor = useColorModeValue('gray.300', 'gray.600');
@@ -206,17 +206,17 @@ const ReviewsSection = () => {
 
       <Box maxW="1200px" mx="auto">
         {isMobile ? (
-          <Box position="relative" mx={2}>
+          <Box position="relative" mx={6}>
             <Slider {...sliderSettings}>
               {reviews.map((review, index) => (
-                <Box key={index}>
+                <Box key={index} px={2}>
                   <ReviewCard review={review} />
                 </Box>
               ))}
             </Slider>
           </Box>
         ) : (
-          <SimpleGrid columns={{ base: 1, md: 3 }} spacing={8}>
+          <SimpleGrid columns={{ base: 1, lg: 3 }} spacing={8}>
             {reviews.map((review, index) => (
               <ReviewCard key={index} review={review} />
             ))}

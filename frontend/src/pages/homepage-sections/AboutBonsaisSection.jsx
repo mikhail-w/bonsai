@@ -7,6 +7,7 @@ const AboutBonsaisSection = () => {
 
   return (
     <Box
+      mt={10}
       as="section"
       bg={bgColor}
       py={{ base: 10, md: 20 }}

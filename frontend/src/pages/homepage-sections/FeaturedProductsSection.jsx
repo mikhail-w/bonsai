@@ -21,7 +21,7 @@ const FeaturedProductsSection = () => {
   const bgColor = useColorModeValue('#48a169', 'white');
   const products = [
     {
-      title: 'Shop   Plants',
+      title: 'Shop Plants',
       description: 'Discover a wide variety of plants.',
       image: p3,
       path: '/plants',
@@ -65,7 +65,7 @@ const FeaturedProductsSection = () => {
 
   return (
     <Box
-      mt={100}
+      mt={50}
       mb={100}
       py={16}
       textAlign="center"
@@ -87,11 +87,13 @@ const FeaturedProductsSection = () => {
             onMouseLeave={() => handleMouseLeave(index)}
             onClick={() => handleToggleFlip(index)}
             cursor={'pointer'}
+            justifySelf={
+              index === 2 && { base: 'center', md: 'center', lg: 'center' }
+            }
           >
             <Box
               className={`card__inner ${flipped[index] ? 'is-flipped' : ''}`}
             >
-              {/* Front Side */}
               <Box className="card__face card__face--front " bg={'white'}>
                 <Box
                   className={`card__picture card__picture--${index + 1}`}
@@ -118,7 +120,6 @@ const FeaturedProductsSection = () => {
                   </span>
                 </h3>
               </Box>
-              {/* Back Side */}
               <Box
                 className={`card__face card__face--back card__face--back--${
                   index + 1
@@ -140,106 +141,14 @@ const FeaturedProductsSection = () => {
                   >
                     {product.description}
                   </Text>
-                  {/* <CustomButton to={product.path}>Shop Now</CustomButton> */}
-                  <Button
-                    as={RouterLink}
-                    to={product.path}
-                    mt={50}
-                    mb={50}
-                    padding={'1rem 2.5rem'}
-                    size="lg"
-                    textTransform={'uppercase'}
-                    borderRadius={'100px'}
-                    bg="#55c57a"
-                    color="white"
-                    position="relative"
-                    fontFamily="lato"
-                    fontWeight={'350px'}
-                    _hover={{
-                      transform: 'translateY(-3px)',
-                      // boxShadow: '0 10px 20px rgba(0, 0, 0, 0.2)',
-                      border: '1px solid',
-                      outlineColor: 'rgba(255, 255, 255, 0)',
-                      outlineOffset: '15px',
-                      // textShadow: '1px 1px 2px #427388',
-                    }}
-                    _active={{
-                      transform: 'translateY(-1px)',
-                      boxShadow: '0 5px 10px rgba(0, 0, 0, 0.2)',
-                    }}
-                    _after={{
-                      content: '""',
-                      display: 'inline-block',
-                      height: '100%',
-                      width: '100%',
-                      borderRadius: '100px',
-                      position: 'absolute',
-                      top: '0',
-                      left: '0',
-                      zIndex: '-1',
-                      transition: 'all 0.4s',
-                      backgroundColor: 'white',
-                    }}
-                    sx={{
-                      ':hover::after': {
-                        transform: 'scaleX(1.4) scaleY(1.6)',
-                        opacity: 0,
-                      },
-                    }}
-                  >
-                    Shop Now
-                  </Button>
+                  <CustomButton to={product.path}>Shop Now</CustomButton>
                 </Flex>
               </Box>
             </Box>
           </Box>
         ))}
       </SimpleGrid>
-      <Button
-        as={RouterLink}
-        to="/products"
-        mt={50}
-        mb={50}
-        padding={'1rem 2.5rem'}
-        size="lg"
-        textTransform={'uppercase'}
-        borderRadius={'100px'}
-        bg="#55c57a"
-        color="white"
-        position="relative"
-        fontFamily="lato"
-        fontWeight={'350px'}
-        _hover={{
-          transform: 'translateY(-3px)',
-          boxShadow: '0 10px 20px rgba(0, 0, 0, 0.2)',
-        }}
-        _active={{
-          transform: 'translateY(-1px)',
-          boxShadow: '0 5px 10px rgba(0, 0, 0, 0.2)',
-        }}
-        _after={{
-          content: '""',
-          display: 'inline-block',
-          height: '100%',
-          width: '100%',
-          borderRadius: '100px',
-          position: 'absolute',
-          top: '0',
-          left: '0',
-          zIndex: '-1',
-          transition: 'all 0.4s',
-          backgroundColor: bgColor,
-        }}
-        sx={{
-          ':hover::after': {
-            transform: 'scaleX(1.4) scaleY(1.6)',
-            opacity: 0,
-          },
-        }}
-      >
-        Shop All Bonsai
-      </Button>
-      {/* <CustomButton to="/products">Shop All Bonsai</CustomButton> */}
+      <CustomButton to="/products">Shop All Bonsai</CustomButton>
     </Box>
   );
 };

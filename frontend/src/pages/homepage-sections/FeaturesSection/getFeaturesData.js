@@ -36,7 +36,7 @@ export const getFeaturesData = useColorModeValue => [
   {
     title: 'Discover Local Treasures',
     description:
-      'Use our integrated map to find bonsai nurseries, stores, and clubs near you.',
+      'Use our integrated map to find bonsai nurseries, stores and clubs near you.',
     image: useColorModeValue(f4l, f4d),
   },
   {

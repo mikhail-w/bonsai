@@ -25,7 +25,13 @@ const YinYang = () => {
     "Whether you're seeking to bring tranquility to your home or searching for the perfect gift, We are your destination for all things bonsai. Explore our shop, dive into our care guides, and join a community of bonsai lovers worldwide.";
 
   const handleInteraction = section => {
-    setActiveSection(prev => (prev !== section ? section : null));
+    if (isMobile) {
+      // Mobile behavior: toggle current section or switch to new section
+      setActiveSection(prev => (prev === section ? null : section));
+    } else {
+      // Desktop behavior: just set the active section
+      setActiveSection(section);
+    }
   };
 
   const handleMouseLeave = () => {
@@ -63,7 +69,12 @@ const YinYang = () => {
           },
         }}
       >
-        <svg viewBox="0 0 240 240" width="100%" height="100%">
+        <svg
+          viewBox="0 0 240 240"
+          width="100%"
+          height="100%"
+          onMouseLeave={handleMouseLeave}
+        >
           <defs>
             {/* Gradient Colors */}
             <linearGradient
@@ -128,9 +139,8 @@ const YinYang = () => {
             fill="url(#hoverBlackGradient)"
             mask="url(#blackFillMask)"
             cursor="pointer"
-            onMouseEnter={() => handleInteraction('black')}
-            onMouseLeave={handleMouseLeave}
-            onClick={() => handleInteraction('black')}
+            onMouseEnter={() => !isMobile && handleInteraction('black')}
+            onClick={() => isMobile && handleInteraction('black')}
           />
 
           {/* White Half */}
@@ -139,9 +149,8 @@ const YinYang = () => {
             fill="url(#hoverWhiteGradient)"
             mask="url(#whiteFillMask)"
             cursor="pointer"
-            onMouseEnter={() => handleInteraction('white')}
-            onMouseLeave={handleMouseLeave}
-            onClick={() => handleInteraction('white')}
+            onMouseEnter={() => !isMobile && handleInteraction('white')}
+            onClick={() => isMobile && handleInteraction('white')}
           />
 
           {/* Dots */}
@@ -150,9 +159,8 @@ const YinYang = () => {
             cy="62.5"
             r="12"
             cursor="pointer"
-            onMouseEnter={() => handleInteraction('white')}
-            onMouseLeave={handleMouseLeave}
-            onClick={() => handleInteraction('white')}
+            onMouseEnter={() => !isMobile && handleInteraction('white')}
+            onClick={() => isMobile && handleInteraction('white')}
             fill={
               activeSection === 'black'
                 ? '#28b485'
@@ -167,9 +175,8 @@ const YinYang = () => {
             cy="177.5"
             r="12"
             cursor="pointer"
-            onMouseEnter={() => handleInteraction('black')}
-            onMouseLeave={handleMouseLeave}
-            onClick={() => handleInteraction('black')}
+            onMouseEnter={() => !isMobile && handleInteraction('black')}
+            onClick={() => isMobile && handleInteraction('black')}
             fill={
               activeSection === 'white'
                 ? 'rgba(50, 205, 50, 0.8)'
@@ -182,7 +189,7 @@ const YinYang = () => {
         </svg>
       </Box>
 
-      {/* Smoothly Transitioning Text Container */}
+      {/* Text Container */}
       <Box
         mt={6}
         width="100%"
