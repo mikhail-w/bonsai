@@ -8,7 +8,6 @@ import {
   Container,
   useMediaQuery,
   useBreakpointValue,
-  Heading,
   Center,
 } from '@chakra-ui/react';
 import { keyframes } from '@emotion/react';
@@ -206,61 +205,13 @@ const MobileFeatureCard = ({ feature, isActive }) => {
 const FeaturesSection = () => {
   const [currentFeature, setCurrentFeature] = useState(0);
   const [previousFeature, setPreviousFeature] = useState(-1);
-  const [touchStart, setTouchStart] = useState(0);
-  const [touchEnd, setTouchEnd] = useState(0);
   const [isLargerThan768] = useMediaQuery('(min-width: 48em)');
   const intervalRef = useRef(null);
-  const containerRef = useRef(null);
-  const dotColor = useColorModeValue('gray.300', 'gray.600');
-  const activeDotColor = useColorModeValue('green.500', 'green.400');
-  const titleColor = useColorModeValue('green.600', 'green.400');
 
   // Get color mode values
   const dotsBg = useColorModeValue('whiteAlpha.800', 'blackAlpha.800');
   const inactiveDotColor = useColorModeValue('gray.300', 'gray.500');
   const hoverDotColor = useColorModeValue('gray.400', 'gray.600');
-  // const baseSliderSettings = {
-  //   dots: true,
-  //   infinite: true,
-  //   speed: 500,
-  //   slidesToShow: 1,
-  //   slidesToScroll: 1,
-  //   autoplay: true,
-  //   autoplaySpeed: 5000,
-  //   pauseOnHover: true,
-  //   nextArrow: <SliderArrow direction="next" />,
-  //   prevArrow: <SliderArrow direction="prev" />,
-  //   appendDots: dots => (
-  //     <Box>
-  //       <Box
-  //         display="flex"
-  //         justifyContent="center"
-  //         alignItems="center"
-  //         gap={2}
-  //         mt={4}
-  //       >
-  //         {dots}
-  //       </Box>
-  //     </Box>
-  //   ),
-  //   customPaging: () => (
-  //     <Box
-  //       as="button"
-  //       w="10px"
-  //       h="10px"
-  //       borderRadius="full"
-  //       bg={dotColor}
-  //       transition="all 0.2s"
-  //       _hover={{ bg: activeDotColor }}
-  //       sx={{
-  //         '&.slick-active': {
-  //           bg: activeDotColor,
-  //           transform: 'scale(1.2)',
-  //         },
-  //       }}
-  //     />
-  //   ),
-  // };
 
   // Define base slider settings
   const baseSliderSettings = {
@@ -402,18 +353,6 @@ const FeaturesSection = () => {
   return (
     <Suspense fallback={<Box>Loading...</Box>}>
       <Center mt={100}>
-        {/* <Heading
-          as="h2"
-          size="2xl"
-          mb={12}
-          maxW={isMobile ? '300' : ''}
-          color={titleColor}
-          textAlign="center"
-          fontWeight="300"
-          textTransform="uppercase"
-        >
-          Website Features
-        </Heading> */}
         <CustomHeading>Website FeaturesX</CustomHeading>
       </Center>
       <Box bg={'mainBg'} color={textColor} minH="100vh" w="100%">
@@ -568,14 +507,6 @@ const FeaturesSection = () => {
                     <DesktopFeatureSlide key={index} feature={feature} />
                   ))}
                 </Slider>
-                {/* <ScrollIndicator
-                  total={features.length}
-                  current={currentFeature}
-                  onClick={index => {
-                    setPreviousFeature(currentFeature);
-                    setCurrentFeature(index);
-                  }}
-                /> */}
               </Box>
             ) : (
               // Mobile: Swipeable cards

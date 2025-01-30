@@ -134,7 +134,24 @@ const YinYang = () => {
               />
             </mask>
           </defs>
-
+          {/* <motion.text
+            x="50%"
+            y="55%"
+            textAnchor="middle"
+            fontSize="26"
+            fill="#50CD32"
+            fontWeight="bold"
+            animate={{
+              opacity: [0.3, 1, 0.3],
+            }}
+            transition={{
+              duration: 1.5,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          >
+            Hover Me
+          </motion.text> */}
           {/* Base Circle with Glow */}
           <MotionCircle
             cx="120"
