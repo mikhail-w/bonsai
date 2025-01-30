@@ -402,7 +402,7 @@ const FeaturesSection = () => {
   return (
     <Suspense fallback={<Box>Loading...</Box>}>
       <Center mt={100}>
-        <Heading
+        {/* <Heading
           as="h2"
           size="2xl"
           mb={12}
@@ -413,7 +413,8 @@ const FeaturesSection = () => {
           textTransform="uppercase"
         >
           Website Features
-        </Heading>
+        </Heading> */}
+        <CustomHeading>Website FeaturesX</CustomHeading>
       </Center>
       <Box bg={'mainBg'} color={textColor} minH="100vh" w="100%">
         <Flex

@@ -6,43 +6,26 @@ import { cleanMediaPath } from '../utils/urlUtils';
 
 import {
   Box,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
   Flex,
-  HStack,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
   Link,
-  MenuDivider,
-  Button,
   Image,
-  Text,
-  Stack,
   Badge,
   Avatar,
-  useDisclosure,
   useToast,
-  useColorModeValue,
 } from '@chakra-ui/react';
 import ColorModeSwitcher from './ColorModeSwitcher';
 import { Link as ChakraLink, useBreakpointValue } from '@chakra-ui/react';
 import { FaUser, FaBlog, FaShoppingCart, FaStore } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
-import { ShoppingCart } from 'lucide-react';
 import { logout } from '../actions/userActions';
 import { clearCart } from '../actions/cartActions';
 import SearchBar from './SearchBar';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isCircleAnimationDone, setIsCircleAnimationDone] = useState(false); // State for controlling the delay
+  const [isCircleAnimationDone, setIsCircleAnimationDone] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isShopHovered, setIsShopHovered] = useState(false);
   const [hoveredLink, setHoveredLink] = useState('default');
@@ -51,8 +34,6 @@ const Navigation = () => {
   const { pathname } = useLocation();
   const toast = useToast();
   const menuRef = useRef(null);
-  // const bgColor = useColorModeValue('white', 'gray.500');
-  const bgColor = useColorModeValue('white', '#2A3439');
 
   // Determine the logo to display based on current route and scroll position
   const logoSrc = pathname === '/' && !scrolled ? logo_white : logo;
@@ -144,15 +125,6 @@ const Navigation = () => {
     });
   };
 
-  const toggleShopMenu = e => {
-    e.preventDefault();
-    if (isMobile) {
-      setIsShopOpen(!isShopOpen);
-    } else {
-      navigate('/products');
-    }
-  };
-
   // Array with both labels and their corresponding URLs
   const navLinks = [
     userInfo
@@ -196,38 +168,11 @@ const Navigation = () => {
   const withoutSidebarRoutes = ['/profile', '/login', '/register'];
   if (withoutSidebarRoutes.some(item => pathname.includes(item))) return null;
 
-  // console.log('NAV BAR OPENED!! CORE:', userInfo.avatar);
-  // console.log(
-  //   'LOCAL PATH: ',
-  //   `${import.meta.env.VITE_API_BASE_URL} \n++avatar++ ${userInfo.avatar}`,
-  //   '\n'
-  // );
-
-  // console.log(
-  //   `https://${import.meta.env.VITE_S3_BUCKET}.s3.${
-  //     import.meta.env.VITE_S3_REGION
-  //   }.amazonaws.com${userInfo.avatar}`
-  // );
-
   return (
     <Box ref={menuRef}>
       <Box>
         {/* Logo and Navigation Button (Hamburger/Close) */}
-        <Flex
-        // as="nav"
-        // align="center"
-        // justify-content="flex-end"
-        // padding="1.5rem"
-        // position="fixed"
-        // top="0"
-        // left="0"
-        // right="0"
-        // zIndex="20" // Adjusted to ensure visibility
-        // width="100%"
-        // bg={scrolled ? bgColor : 'transparent'} // White background on scroll
-        // boxShadow={scrolled ? 'md' : 'none'} // Add shadow when scrolled
-        // transition="background-color 0.3s ease" // Smooth transition for background color
-        >
+        <Flex>
           {/* Logo */}
           <RouterLink to="/">
             <Box position="fixed" top={9} left={8} zIndex="10">
@@ -339,7 +284,6 @@ const Navigation = () => {
                         margin: '8px',
                       }}
                       onMouseEnter={() => setHoveredLink(link.label)}
-                      // onMouseLeave={() => setHoveredLink('default')}
                     >
                       {/* For Shop link and its submenu */}
                       {link.label === 'Shop' ? (

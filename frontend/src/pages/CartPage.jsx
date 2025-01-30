@@ -80,7 +80,7 @@ function CartPage() {
   };
 
   const continueHandler = () => {
-    navigate('/');
+    navigate('/products');
   };
 
   return (

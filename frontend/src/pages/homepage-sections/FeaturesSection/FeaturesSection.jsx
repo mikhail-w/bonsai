@@ -22,13 +22,13 @@ import FeatureTitle from './FeatureTitle';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import CustomHeading from '../../../components/CustomHeading';
 
 const FeaturesSection = () => {
   const mainBg = useColorModeValue('white', 'gray.800');
   const textColor = useColorModeValue('gray.800', 'gray.200');
   const features = getFeaturesData(useColorModeValue);
   const isMobile = useBreakpointValue({ base: true, md: false });
-  const titleColor = useColorModeValue('green.600', 'green.400');
   const dotsBg = useColorModeValue('whiteAlpha.800', 'blackAlpha.800');
   const inactiveDotColor = useColorModeValue('gray.300', 'gray.500');
   const hoverDotColor = useColorModeValue('gray.400', 'gray.600');
@@ -136,18 +136,7 @@ const FeaturesSection = () => {
   return (
     <Suspense fallback={<Box>Loading...</Box>}>
       <Center mt={{ base: '0', md: '100' }}>
-        <Heading
-          as="h2"
-          size="2xl"
-          mb={{ base: '0', md: '100' }}
-          maxW={isMobile ? '300' : ''}
-          color={titleColor}
-          textAlign="center"
-          fontWeight="300"
-          textTransform="uppercase"
-        >
-          Website Features
-        </Heading>
+        <CustomHeading size={'2xl'}>Website Features</CustomHeading>
       </Center>
       <Box bg={mainBg} color={textColor} minH="100vh" w="100%">
         <Flex

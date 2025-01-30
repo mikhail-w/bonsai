@@ -1,7 +1,4 @@
-import { useEffect } from 'react';
 import '../index.css';
-import ScrollToTopButton from '../components/ScrollToTopButton';
-
 import {
   HeroSection,
   FeaturedProductsSection,
@@ -12,8 +9,9 @@ import {
   NewsLetterSection,
   AboutBonsaisSection,
 } from '@homepageSections';
+import { useEffect } from 'react';
+import ScrollToTopButton from '../components/ScrollToTopButton';
 import FeaturesSection from './homepage-sections/FeaturesSection/FeaturesSection';
-// import FeaturesSection from './homepage-sections/FeaturesSection';
 import { Box } from '@chakra-ui/react';
 
 function HomePage() {
