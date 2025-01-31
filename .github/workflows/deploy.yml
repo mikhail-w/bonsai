@@ -39,3 +39,7 @@ jobs:
         run: |
           aws s3 cp frontend/dist/index.html s3://${{ secrets.AWS_S3_BUCKET }}/index.html
           aws s3 sync frontend/dist/assets s3://${{ secrets.AWS_S3_BUCKET }}/assets
+
+      - name: Invalidate CloudFront Cache
+        run: |
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
