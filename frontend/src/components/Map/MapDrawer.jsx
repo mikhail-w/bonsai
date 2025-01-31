@@ -48,9 +48,10 @@ const MapDrawer = ({
                 onClick={() => {
                   setSelectedMarker(location);
                   setCenter({
-                    lat: location.geometry.location.lat(),
-                    lng: location.geometry.location.lng(),
+                    lat: location.position.lat,
+                    lng: location.position.lng,
                   });
+
                   onClose();
                 }}
               >

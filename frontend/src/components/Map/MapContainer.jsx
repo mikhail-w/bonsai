@@ -14,7 +14,8 @@ import MapMarkerInfoWindow from './MapMarkerInfoWindow';
 import DefaultImg from '../../assets/images/bonsai-tree-logo.png';
 
 const mapContainerStyle = {
-  height: '90%',
+  // height: '90%',
+  height: 'calc(100vh - 130px)',
   width: '100%',
 };
 
