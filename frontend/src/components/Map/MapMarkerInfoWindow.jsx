@@ -19,7 +19,6 @@ const MapMarkerInfoWindow = ({
 }) => {
   const bgColor = useColorModeValue('white', 'gray.700');
   const textColor = useColorModeValue('gray.700', 'white');
-  // console.log('Selected Marker Address:', selectedMarker.address);
 
   const renderStars = rating => {
     const stars = [];
@@ -86,7 +85,7 @@ const MapMarkerInfoWindow = ({
       onCloseClick={null}
     >
       <Box
-        width="300px"
+        width={{ base: 'auto', md: '300px' }}
         bg={bgColor}
         borderRadius="md"
         borderWidth="2px"
@@ -95,27 +94,28 @@ const MapMarkerInfoWindow = ({
         boxShadow="lg"
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
+        whiteSpace="normal"
+        overflow="hidden"
       >
         <VStack align="stretch" spacing={0}>
-          {/* Image Section */}
           <Image
             src={selectedMarker.photo}
             alt={`${selectedMarker.name} thumbnail`}
-            height="128px"
+            height="auto"
+            maxHeight="180px"
             objectFit="cover"
             width="100%"
+            maxWidth="100%"
           />
 
-          {/* Content Container */}
           <Box backgroundColor={bgColor} p={4}>
-            {/* Title and Directions */}
             <HStack justify="space-between" align="flex-start" mb={2}>
               <Text
                 color={textColor}
                 fontWeight="bold"
                 fontSize="lg"
-                noOfLines={1}
-                maxWidth="70%"
+                noOfLines={2}
+                maxWidth="75%"
               >
                 {selectedMarker.name}
               </Text>
@@ -141,7 +141,6 @@ const MapMarkerInfoWindow = ({
               </Tooltip>
             </HStack>
 
-            {/* Rating Section */}
             <Box mb={2}>
               <HStack spacing={1} mb={1}>
                 <Text fontSize="sm" color={textColor}>
@@ -159,7 +158,6 @@ const MapMarkerInfoWindow = ({
               </Text>
             </Box>
 
-            {/* Address */}
             {selectedMarker.address && (
               <HStack spacing={2} mt={2}>
                 <Icon

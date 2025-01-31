@@ -6,18 +6,18 @@ import React, {
   useMemo,
 } from 'react';
 import { GoogleMap, Marker } from '@react-google-maps/api';
-import { Box, Spinner, HStack, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Spinner,
+  HStack,
+  Text,
+  useBreakpointValue,
+} from '@chakra-ui/react';
 import CustomMarker from '../../assets/images/leaf-green.png';
 import ActiveMarker from '../../assets/images/leaf-red.png';
 import useMapLogic from '../../hooks/useMapLogic';
 import MapMarkerInfoWindow from './MapMarkerInfoWindow';
 import DefaultImg from '../../assets/images/bonsai-tree-logo.png';
-
-const mapContainerStyle = {
-  // height: '90%',
-  height: 'calc(100vh - 130px)',
-  width: '100%',
-};
 
 //Default to New York
 const defaultCenter = {
@@ -56,6 +56,11 @@ const MapContainer = ({
   const hoverTimeoutRef = useRef(null);
   const searchTimeoutRef = useRef(null);
   const servicesRef = useRef(null);
+
+  const mapContainerStyle = {
+    height: useBreakpointValue({ base: 'calc(100vh - 130px)', md: '90%' }),
+    width: '100%',
+  };
 
   const markerIcons = useMemo(() => {
     if (!isLoaded || !window.google?.maps) {
