@@ -23,6 +23,9 @@ const MapDrawer = ({
   handleIconClick,
   setSelectedMarker,
 }) => {
+  const listItemBg = useColorModeValue('white', 'gray.700');
+  const listItemHoverBg = useColorModeValue('gray.100', 'gray.600');
+
   return (
     <Drawer placement="bottom" onClose={onClose} isOpen={isOpen}>
       <DrawerOverlay />
@@ -37,35 +40,38 @@ const MapDrawer = ({
                 p={3}
                 borderRadius="md"
                 boxShadow="sm"
-                bg={useColorModeValue('white', 'gray.700')}
+                bg={listItemBg}
                 _hover={{
-                  bg: useColorModeValue('gray.100', 'gray.600'),
+                  bg: listItemHoverBg,
                   cursor: 'pointer',
                 }}
                 onClick={() => {
+                  setSelectedMarker(location);
                   setCenter({
                     lat: location.geometry.location.lat(),
                     lng: location.geometry.location.lng(),
                   });
-                  setSelectedMarker({
-                    id: location.place_id,
-                    ...location,
-                  });
-                  onClose(); // Close the drawer after selecting a location
+                  onClose();
                 }}
               >
-                <HStack>
+                <HStack spacing={4}>
                   <Image
                     boxSize="50px"
                     borderRadius="md"
-                    src={location.photos ? location.photos[0].getUrl() : null}
+                    objectFit="cover"
+                    src={location.photo || '/default-image.png'}
                     alt={`${location.name} thumbnail`}
+                    fallbackSrc="/default-image.png"
                   />
                   <VStack align="start" spacing={1}>
                     <Text fontFamily="rale" fontWeight="bold">
                       {location.name}
                     </Text>
-                    <Text fontFamily="rale" fontSize="sm">
+                    <Text
+                      fontFamily="rale"
+                      fontSize="sm"
+                      color={useColorModeValue('gray.600', 'gray.300')}
+                    >
                       {location.vicinity}
                     </Text>
                   </VStack>

@@ -8,6 +8,7 @@ import {
   Link,
   Icon,
   Tooltip,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { MapPin, Navigation2, Star } from 'lucide-react';
 
@@ -16,6 +17,8 @@ const MapMarkerInfoWindow = ({
   onMouseEnter,
   onMouseLeave,
 }) => {
+  const bgColor = useColorModeValue('white', 'gray.700');
+  const textColor = useColorModeValue('gray.700', 'white');
   const renderStars = rating => {
     const stars = [];
     const fullStars = Math.floor(rating);
@@ -82,7 +85,12 @@ const MapMarkerInfoWindow = ({
     >
       <Box
         width="300px"
-        bg="white"
+        bg={bgColor}
+        borderRadius="md"
+        borderWidth="2px"
+        borderStyle="solid"
+        borderColor={bgColor}
+        boxShadow="lg"
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
       >
@@ -97,10 +105,11 @@ const MapMarkerInfoWindow = ({
           />
 
           {/* Content Container */}
-          <Box p={4}>
+          <Box backgroundColor={bgColor} p={4}>
             {/* Title and Directions */}
             <HStack justify="space-between" align="flex-start" mb={2}>
               <Text
+                color={textColor}
                 fontWeight="bold"
                 fontSize="lg"
                 noOfLines={1}
@@ -133,26 +142,35 @@ const MapMarkerInfoWindow = ({
             {/* Rating Section */}
             <Box mb={2}>
               <HStack spacing={1} mb={1}>
-                <Text fontSize="sm" color="gray.700">
+                <Text fontSize="sm" color={textColor}>
                   Rating:
                 </Text>
                 <HStack spacing={0.5}>
                   {renderStars(selectedMarker.rating)}
                 </HStack>
-                <Text fontSize="sm" color="gray.700">
+                <Text fontSize="sm" color={textColor}>
                   {selectedMarker.rating}
                 </Text>
               </HStack>
-              <Text fontSize="xs" color="gray.500">
+              <Text fontSize="xs" color={textColor}>
                 ({selectedMarker.reviewCount} reviews)
               </Text>
             </Box>
 
             {/* Address */}
-            <HStack spacing={2} color="gray.600">
-              <Icon as={MapPin} boxSize={4} mt={1} flexShrink={0} />
-              <Text fontSize="sm">{selectedMarker.address}</Text>
-            </HStack>
+            {selectedMarker.address && (
+              <HStack spacing={2} mt={2}>
+                <Icon
+                  as={MapPin}
+                  boxSize={4}
+                  color={textColor}
+                  flexShrink={0}
+                />
+                <Text color={textColor} fontSize="sm" noOfLines={2}>
+                  {selectedMarker.address}
+                </Text>
+              </HStack>
+            )}
           </Box>
         </VStack>
       </Box>

@@ -32,17 +32,16 @@ const MapDetailsPanel = ({ selectedLocation, closePanel, isPanelOpen }) => {
           color={'white'}
           filter="brightness(3.2) contrast(1.1)"
           bg="rgba(0, 0, 0, 0.7)"
-          _hover={{ transform: 'scale(1.2)' }}
+          _hover={{
+            transform: 'scale(1.2)',
+            bg: 'rgba(0, 0, 0, 1)', // Change to a darker shade on hover
+          }}
         />
         {selectedLocation && (
           <VStack align="start" spacing={4}>
             <Box width={'100%'} height={'300px'}>
               <Image
-                src={
-                  selectedLocation.photos
-                    ? selectedLocation.photos[0].getUrl({ maxWidth: 400 })
-                    : DefaultImg
-                }
+                src={selectedLocation.photo || DefaultImg}
                 alt={`${selectedLocation.name} thumbnail`}
                 onError={e => {
                   e.target.src = DefaultImg;

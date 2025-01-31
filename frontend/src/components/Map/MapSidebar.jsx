@@ -78,27 +78,15 @@ const MapSidebar = ({
                 cursor: 'pointer',
               }}
               onClick={() => {
-                setSelectedLocationId(location.place_id); // Update the selected location
-                if (location.geometry && location.geometry.location) {
-                  const latLng = {
-                    lat: location.geometry.location.lat(),
-                    lng: location.geometry.location.lng(),
-                  };
-                  if (panTo) {
-                    panTo(latLng);
-                  } else {
-                    setCenter(latLng);
-                  }
-                  setSelectedMarker({
-                    id: location.place_id,
-                    ...location,
-                  });
-                } else {
-                  console.error(
-                    'Location geometry or location is undefined:',
-                    location
-                  );
+                setSelectedLocationId(location.id);
+                const latLng = {
+                  lat: location.position.lat,
+                  lng: location.position.lng,
+                };
+                if (panTo) {
+                  panTo(latLng);
                 }
+                setSelectedMarker(location);
               }}
             >
               <HStack align="center" width="100%" spacing={0} px={4} py={2}>
@@ -111,11 +99,7 @@ const MapSidebar = ({
                   <Image
                     boxSize="100%"
                     objectFit="cover"
-                    src={
-                      location.photos
-                        ? location.photos[0].getUrl({ maxWidth: 400 })
-                        : DefaultImg
-                    }
+                    src={location.photo || DefaultImg}
                     alt={`${location.name} thumbnail`}
                   />
                 </Box>

@@ -1,4 +1,3 @@
-import React, { useState, useRef } from 'react';
 import {
   Box,
   Text,
@@ -7,6 +6,8 @@ import {
   Spinner,
   useBreakpointValue,
 } from '@chakra-ui/react';
+import useMapLogic from '../hooks/useMapLogic';
+import React, { useState, useRef } from 'react';
 import { useLoadScript } from '@react-google-maps/api';
 import MapContainer from '../components/Map/MapContainer';
 import MapSidebar from '../components/Map/MapSidebar';
@@ -14,11 +15,12 @@ import MapDetailsPanel from '../components/Map/MapDetailsPanel';
 import MapDrawer from '../components/Map/MapDrawer';
 
 function MapPage() {
+  const { isLoaded, loadError } = useMapLogic();
+
   const [markers, setMarkers] = useState([]);
   const [activeMarker, setActiveMarker] = useState(null); // Track active marker
   const [locationList, setLocationList] = useState([]);
   const [center, setCenter] = useState({ lat: 0, lng: 0 });
-  const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedMarker, setSelectedMarker] = useState(null);
   const [infoWindowVisible, setInfoWindowVisible] = useState(false);
@@ -29,14 +31,11 @@ function MapPage() {
   const [panTo, setPanTo] = useState(null);
   const closeTimeoutRef = useRef(null);
 
-  // Load the Google Maps API script
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-    libraries: ['places'],
-  });
-
   // Determine if the screen size is mobile
   const isMobile = useBreakpointValue({ base: true, md: false });
+
+  if (loadError) return <Text color="red.500">Error loading maps</Text>;
+  if (!isLoaded) return <Spinner size="xl" />;
 
   const handleMouseOver = marker => {
     clearTimeout(closeTimeoutRef.current);
@@ -161,7 +160,8 @@ function MapPage() {
           bottom="0"
           left="0"
           width="100%"
-          colorScheme="green"
+          // colorScheme="green"
+          backgroundColor={'green.400'}
           onClick={onOpen}
           zIndex="1000"
           borderRadius={0}
