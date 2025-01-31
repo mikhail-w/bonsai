@@ -252,6 +252,7 @@ const MapContainer = ({
       const processedResults = results.map(place => ({
         id: place.place_id,
         name: place.name,
+        address: place.vicinity,
         position: {
           lat: place.geometry.location.lat(),
           lng: place.geometry.location.lng(),

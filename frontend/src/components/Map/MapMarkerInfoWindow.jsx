@@ -19,6 +19,8 @@ const MapMarkerInfoWindow = ({
 }) => {
   const bgColor = useColorModeValue('white', 'gray.700');
   const textColor = useColorModeValue('gray.700', 'white');
+  console.log('Selected Marker Address:', selectedMarker.address);
+
   const renderStars = rating => {
     const stars = [];
     const fullStars = Math.floor(rating);
