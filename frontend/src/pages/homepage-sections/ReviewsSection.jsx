@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   Box,
   Text,
@@ -14,12 +14,9 @@ import {
 } from '@chakra-ui/react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import { FaQuoteRight } from 'react-icons/fa';
-import { motion, AnimatePresence } from 'framer-motion';
 import r1 from '../../assets/images/r1.png';
 import r2 from '../../assets/images/r2.png';
 import CustomHeading from '../../components/CustomHeading';
-
-const MotionBox = motion(Box);
 
 const reviews = [
   {
@@ -94,28 +91,35 @@ const reviews = [
   },
 ];
 
-const SliderArrow = ({ direction, onClick }) => (
-  <IconButton
-    aria-label={`${direction} slide`}
-    icon={direction === 'next' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-    onClick={onClick}
-    position="absolute"
-    top="50%"
-    transform="translateY(-50%)"
-    {...(direction === 'next' ? { right: '-16px' } : { left: '-16px' })}
-    zIndex={2}
-    colorScheme="green"
-    borderRadius="full"
-    size="lg"
-    _hover={{ transform: 'translateY(-50%) scale(1.1)' }}
-    transition="all 0.2s"
-  />
-);
+const SliderArrow = ({ direction, onClick }) => {
+  const isNext = direction === 'next';
+
+  return (
+    <IconButton
+      aria-label={`${direction} slide`}
+      icon={isNext ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+      onClick={onClick}
+      position="absolute"
+      top="50%"
+      transform="translateY(-50%)"
+      {...(isNext ? { right: '-16px' } : { left: '-16px' })}
+      zIndex={2}
+      colorScheme="green"
+      borderRadius="full"
+      size="lg"
+      _hover={{
+        transform: 'translateY(-50%) scale(1.1)',
+      }}
+      transition="all 0.2s"
+    />
+  );
+};
 
 const ReviewCard = ({ review }) => {
   const bgColor = useColorModeValue('white', 'gray.800');
   const textColor = useColorModeValue('gray.700', 'gray.200');
   const titleColor = useColorModeValue('gray.800', 'white');
+  const isMobile = useBreakpointValue({ base: true, lg: false });
 
   return (
     <Box
@@ -124,8 +128,8 @@ const ReviewCard = ({ review }) => {
       boxShadow="lg"
       p={6}
       textAlign="center"
-      width="350px"
-      maxW="350px"
+      width={isMobile ? 'calc(100vw - 80px)' : '350px'}
+      maxW={isMobile ? '100%' : '350px'}
       minH="400px"
       m="auto"
       position="relative"
@@ -159,12 +163,20 @@ const ReviewCard = ({ review }) => {
         </Box>
       </Box>
 
-      <Text color={textColor} fontSize="md" mb={4} fontStyle="italic">
+      <Text
+        color={textColor}
+        fontSize={isMobile ? 'lg' : 'md'}
+        mb={4}
+        fontStyle="italic"
+        px={isMobile ? 2 : 0}
+      >
         {review.review}
       </Text>
+
       <Heading as="h3" size="md" color={titleColor} mb={1}>
         {review.name}
       </Heading>
+
       <Text color="gray.500" fontSize="sm">
         {review.position}
       </Text>
@@ -173,17 +185,19 @@ const ReviewCard = ({ review }) => {
 };
 
 const ReviewsSection = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [displayedGroup, setDisplayedGroup] = useState(0);
-  const [direction, setDirection] = useState('next');
-  const [isHovered, setIsHovered] = useState(false);
+  const [currentSlide, setCurrentSlide] = React.useState(0);
+  const [displayedGroup, setDisplayedGroup] = React.useState(0);
+  const [isHovered, setIsHovered] = React.useState(false);
   const isMobile = useBreakpointValue({ base: true, lg: false });
   const sectionBg = useColorModeValue('gray.50', 'gray.900');
+  const titleColor = useColorModeValue('green.600', 'green.400');
   const dotColor = useColorModeValue('gray.300', 'gray.600');
+  const { colorMode } = useColorMode();
+
+  // Calculate the total number of groups for desktop view (3 reviews per group)
   const totalGroups = Math.ceil(reviews.length / 3);
 
   const nextSlide = () => {
-    setDirection('next');
     if (isMobile) {
       setCurrentSlide(prev => (prev + 1) % reviews.length);
     } else {
@@ -192,7 +206,6 @@ const ReviewsSection = () => {
   };
 
   const prevSlide = () => {
-    setDirection('prev');
     if (isMobile) {
       setCurrentSlide(prev => (prev - 1 + reviews.length) % reviews.length);
     } else {
@@ -200,12 +213,35 @@ const ReviewsSection = () => {
     }
   };
 
-  useEffect(() => {
-    if (!isHovered) {
-      const timer = setInterval(nextSlide, 7000);
-      return () => clearInterval(timer);
+  const goToSlide = index => {
+    if (isMobile) {
+      setCurrentSlide(index);
+    } else {
+      setDisplayedGroup(Math.floor(index / 3));
     }
-  }, [isHovered]);
+  };
+
+  React.useEffect(() => {
+    let timer;
+    if (!isHovered) {
+      timer = setInterval(nextSlide, 7000);
+    }
+    return () => clearInterval(timer);
+  }, [isHovered, isMobile]);
+
+  // Get the current group of reviews for desktop view
+  const getCurrentGroup = () => {
+    const startIndex = displayedGroup * 3;
+    const currentGroup = reviews.slice(startIndex, startIndex + 3);
+
+    // If it's the last group and there's only one review, center it
+    if (currentGroup.length === 1) {
+      return [null, currentGroup[0], null];
+    } else if (currentGroup.length === 2) {
+      return [currentGroup[0], currentGroup[1], null];
+    }
+    return currentGroup;
+  };
 
   return (
     <Box bg={sectionBg} py={16} px={4}>
@@ -213,60 +249,92 @@ const ReviewsSection = () => {
       <Box
         maxW="1200px"
         mx="auto"
-        position="relative"
-        minH="500px"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <AnimatePresence mode="wait" initial={false}>
-          <MotionBox
-            key={isMobile ? currentSlide : displayedGroup}
-            display="flex"
-            justifyContent="center"
-            gap={8}
-            minH="450px"
-            initial={{ opacity: 0, x: direction === 'next' ? 50 : -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: direction === 'next' ? -50 : 50 }}
-            transition={{ duration: 0.5, ease: 'easeInOut' }}
-          >
-            {isMobile ? (
-              <ReviewCard review={reviews[currentSlide]} />
-            ) : (
-              reviews
-                .slice(displayedGroup * 3, displayedGroup * 3 + 3)
-                .map((review, index) => (
+        {isMobile ? (
+          <Box position="relative" mx={6}>
+            <ReviewCard review={reviews[currentSlide]} />
+            <SliderArrow direction="prev" onClick={prevSlide} />
+            <SliderArrow direction="next" onClick={nextSlide} />
+          </Box>
+        ) : (
+          <Box position="relative">
+            <SimpleGrid columns={{ base: 1, lg: 3 }} spacing={8}>
+              {getCurrentGroup().map((review, index) =>
+                review ? (
                   <ReviewCard key={index} review={review} />
-                ))
-            )}
-          </MotionBox>
-        </AnimatePresence>
-        <SliderArrow direction="prev" onClick={prevSlide} />
-        <SliderArrow direction="next" onClick={nextSlide} />
-      </Box>
-
-      {/* Pagination Dots */}
-      <Flex justify="center" mt={6} gap={3} minH="24px">
-        {Array.from({ length: isMobile ? reviews.length : totalGroups }).map(
-          (_, index) => (
-            <Circle
-              key={index}
-              size="3"
-              as="button"
-              onClick={() =>
-                isMobile ? setCurrentSlide(index) : setDisplayedGroup(index)
-              }
-              bg={
-                (isMobile ? currentSlide : displayedGroup) === index
-                  ? 'green.500'
-                  : dotColor
-              }
-              transition="all 0.2s"
-              _hover={{ bg: 'green.400' }}
-            />
-          )
+                ) : (
+                  <Box key={index} width="350px" /> // Placeholder for centering
+                )
+              )}
+            </SimpleGrid>
+            <SliderArrow direction="prev" onClick={prevSlide} />
+            <SliderArrow direction="next" onClick={nextSlide} />
+          </Box>
         )}
-      </Flex>
+
+        {/* Custom Pagination Dots */}
+        <Flex justify="center" mt={6} gap={3}>
+          {isMobile
+            ? // Mobile pagination - one dot per review
+              reviews.map((_, index) => (
+                <Circle
+                  key={index}
+                  size="3"
+                  as="button"
+                  onClick={() => goToSlide(index)}
+                  bg={currentSlide === index ? 'green.500' : dotColor}
+                  transform={
+                    currentSlide === index ? 'scale(1.25)' : 'scale(1)'
+                  }
+                  transition="all 0.2s"
+                  _hover={{
+                    bg: currentSlide === index ? 'green.500' : 'green.400',
+                  }}
+                  sx={{
+                    '&:focus': {
+                      boxShadow: 'none',
+                      outline:
+                        colorMode === 'dark'
+                          ? '1px solid white'
+                          : '1px solid black',
+                      outlineOffset: '2px',
+                    },
+                  }}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))
+            : // Desktop pagination - one dot per group of 3
+              Array.from({ length: totalGroups }).map((_, index) => (
+                <Circle
+                  key={index}
+                  size="3"
+                  as="button"
+                  onClick={() => goToSlide(index * 3)}
+                  bg={displayedGroup === index ? 'green.500' : dotColor}
+                  transform={
+                    displayedGroup === index ? 'scale(1.25)' : 'scale(1)'
+                  }
+                  transition="all 0.2s"
+                  _hover={{
+                    bg: displayedGroup === index ? 'green.500' : 'green.400',
+                  }}
+                  sx={{
+                    '&:focus': {
+                      boxShadow: 'none',
+                      outline:
+                        colorMode === 'dark'
+                          ? '1px solid white'
+                          : '1px solid black',
+                      outlineOffset: '2px',
+                    },
+                  }}
+                  aria-label={`Go to group ${index + 1}`}
+                />
+              ))}
+        </Flex>
+      </Box>
     </Box>
   );
 };
