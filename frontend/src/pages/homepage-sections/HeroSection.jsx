@@ -1,136 +1,139 @@
 import React from 'react';
-import { Box, Heading, Text, Button, Flex } from '@chakra-ui/react';
-import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
+import { Box, Text, Flex } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import heroSmall from '../../assets/images/h3.png';
 import heroLarge from '../../assets/images/h3.png';
+import CustomButton from '../../components/CustomButton';
+
+// Parent container variants
+const containerVariants = {
+  initial: {},
+  animate: {
+    transition: {
+      // Wait a bit longer before the first child animates
+      delayChildren: 0.9,
+      // Delay more between child animations
+      staggerChildren: 1,
+    },
+  },
+};
+
+// Child fade + slide-up variant
+const fadeUpChild = {
+  initial: { opacity: 0, y: 60 }, // Slightly larger y-offset for a smoother slide
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      // Increase duration for a slower, smoother appearance
+      duration: 1.2,
+      ease: 'easeInOut',
+    },
+  },
+};
+
+// Child fade-only variant (for the sub-text)
+const fadeInChild = {
+  initial: { opacity: 0 },
+  animate: {
+    opacity: 1,
+    transition: {
+      duration: 1.2,
+      ease: 'easeInOut',
+    },
+  },
+};
 
 function HeroSection() {
-  const fadeInUp = {
-    initial: { opacity: 0, y: 50 },
-    animate: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 1, ease: 'easeInOut' },
-    },
-  };
-
-  const fadeInButton = {
-    initial: { opacity: 0, scale: 0.8 },
-    animate: {
-      opacity: 1,
-      scale: 1,
-      transition: { duration: 0.6, delay: 0.2, ease: 'easeInOut' },
-    },
-  };
   return (
-    <>
-      {/* Hero Section with Gradient Background */}
+    <Box
+      position="relative"
+      height="85vh"
+      bgImage={{
+        base: `linear-gradient(to right bottom, rgba(126, 213, 111, 0.8), rgba(40, 180, 133, 0.8)), url(${heroSmall})`,
+        md: `linear-gradient(to right bottom, rgba(126, 213, 111, 0.8), rgba(40, 180, 133, 0.8)), url(${heroLarge})`,
+      }}
+      bgSize="cover"
+      bgPosition="center"
+      clipPath="polygon(0 0, 100% 0, 100% 85%, 0 100%)"
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      textAlign="center"
+      zIndex="1"
+      flexDirection="column"
+    >
+      {/* Hero Overlay */}
       <Box
-        position="relative"
-        height="85vh"
-        bgImage={{
-          base: `linear-gradient(to right bottom, rgba(126, 213, 111, 0.8), rgba(40, 180, 133, 0.8)), url(${heroSmall})`,
-          md: `linear-gradient(to right bottom, rgba(126, 213, 111, 0.8), rgba(40, 180, 133, 0.8)), url(${heroLarge})`,
-        }}
-        bgSize="cover"
-        bgPosition="center"
-        clipPath="polygon(0 0, 100% 0, 100% 85%, 0 100%)"
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        textAlign="center"
-        zIndex="1"
-        flexDirection="column"
-      >
-        {/* Hero Overlay */}
-        <Box
-          position="absolute"
-          top="0"
-          left="0"
-          right="0"
-          bottom="0"
-          bg="rgba(0, 0, 0, 0.4)"
-          zIndex="2"
-        />
+        position="absolute"
+        top="0"
+        left="0"
+        right="0"
+        bottom="0"
+        bg="rgba(0, 0, 0, 0.4)"
+        zIndex="2"
+      />
 
-        {/* Hero Content */}
-        <Flex
-          as={motion.div}
-          flexDirection="column"
-          alignItems="center"
-          position="relative"
-          zIndex="3"
-          initial="initial"
-          animate="animate"
+      {/* Hero Content with staggered children */}
+      <Flex
+        as={motion.div}
+        flexDirection="column"
+        alignItems="center"
+        position="relative"
+        zIndex="3"
+        variants={containerVariants} // Parent variants
+        initial="initial"
+        animate="animate"
+      >
+        {/* Child 1: Heading */}
+        <Text
+          as={motion.p}
+          variants={fadeUpChild}
+          color="white"
+          fontWeight={300}
+          fontFamily="lato"
+          fontSize={{ base: '3.2rem', md: '6rem', lg: '8rem' }}
+          letterSpacing="0.3rem"
+          mb={2}
         >
-          <Text
-            as={motion.p}
-            color="white"
-            fontWeight={300}
-            fontFamily="lato"
-            fontSize={{ base: '12vw', md: '6vw', lg: '7vw' }}
-            letterSpacing="0.5rem"
-            mb={4}
-            variants={fadeInUp}
+          BONSAI
+        </Text>
+
+        {/* Child 2: Sub-Text */}
+        <Text
+          as={motion.p}
+          variants={fadeInChild}
+          fontWeight={300}
+          fontFamily="lato"
+          // fontSize="sm"
+          fontSize={{ base: '.65rem', md: '1rem', lg: '1.2rem' }}
+          color="white"
+          mb={3}
+          textTransform="uppercase"
+        >
+          Cultivating Serenity
+        </Text>
+
+        {/* Child 3: Button */}
+        <Box as={motion.div} variants={fadeUpChild}>
+          <CustomButton
+            to="/products"
+            color="black"
+            bg="rgba(255, 255, 255, 0.9)"
+            padding=".5rem 1.5rem"
+            fontSize={{ base: '.67rem', md: '1rem', lg: '1.2rem' }}
+            _hover={{
+              border: '1px solid',
+              background: 'rgba(255, 255, 255, 0.9)',
+              boxShadow: '0 0 10px rgba(255, 255, 255, 0.08)',
+            }}
+            _focus={{ boxShadow: 'outline', outline: 'none' }}
           >
-            BONSAI
-          </Text>
-          <Text
-            as={motion.p}
-            fontWeight={300}
-            fontFamily="lato"
-            fontSize="sm"
-            color="white"
-            mb={8}
-            variants={fadeInUp}
-          >
-            BE ONE WITH NATURE
-          </Text>
-          <RouterLink to="/products">
-            <motion.div
-              initial="initial"
-              animate="animate"
-              variants={fadeInButton}
-            >
-              <Button
-                display="flex"
-                flexBasis="auto"
-                justifyContent="center"
-                alignItems="center"
-                width="auto"
-                size="sm"
-                bg="white"
-                color={'black'}
-                paddingX="1.5rem"
-                paddingY="1rem"
-                boxShadow="md"
-                alignSelf="center"
-                fontSize="lg"
-                fontWeight="thin"
-                border="0px solid"
-                borderRadius="full"
-                outline="1px solid rgba(255, 255, 255, 0.5)"
-                outlineOffset="0px"
-                transition="all 0.75s cubic-bezier(0.19, 1, 0.22, 1)"
-                _hover={{
-                  border: '1px solid',
-                  background: 'rgba(255, 255, 255, 0.9)', // Example pinkish hover background
-                  boxShadow: '0 0 10px rgba(255, 255, 255, 0.08)',
-                  outlineColor: 'rgba(255, 255, 255, 0)',
-                  outlineOffset: '15px',
-                  textShadow: '1px 1px 2px #427388',
-                }}
-                _focus={{ boxShadow: 'outline', outline: 'none' }}
-                position="relative"
-              >
-                EXPLORE NATURE
-              </Button>
-            </motion.div>
-          </RouterLink>
-        </Flex>
-      </Box>
-    </>
+            EXPLORE NATURE
+          </CustomButton>
+        </Box>
+      </Flex>
+    </Box>
   );
 }
 

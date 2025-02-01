@@ -20,7 +20,7 @@ const YinYang = () => {
   const bgColor = useColorModeValue('#F8F8F8', 'rgba(255, 255, 255, 0.18)');
 
   const defaultParagraph =
-    'Discover the art where patience and nature blend harmoniously. Explore our journey into tranquility and craftsmanship.';
+    'Experience the art where patience and nature blend harmoniously. Embark on a journey of tranquility and craftsmanship.';
   const firstParagraph =
     'Our collection features meticulously crafted bonsais for every level of enthusiast, from beginners to seasoned artists. We also offer high-quality tools, pots, and guides to help you nurture your miniature masterpiece.';
   const secondParagraph =
