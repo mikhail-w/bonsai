@@ -18,6 +18,7 @@ import r1 from '../../assets/images/r1.png';
 import r2 from '../../assets/images/r2.png';
 import CustomHeading from '../../components/CustomHeading';
 
+// Original reviews array
 const reviews = [
   {
     name: 'James Wilson',
@@ -91,9 +92,9 @@ const reviews = [
   },
 ];
 
+// Arrow component (unchanged)
 const SliderArrow = ({ direction, onClick }) => {
   const isNext = direction === 'next';
-
   return (
     <IconButton
       aria-label={`${direction} slide`}
@@ -102,7 +103,8 @@ const SliderArrow = ({ direction, onClick }) => {
       position="absolute"
       top="50%"
       transform="translateY(-50%)"
-      {...(isNext ? { right: '-16px' } : { left: '-16px' })}
+      // Keep them slightly inside so they aren't cut off
+      {...(isNext ? { right: '1rem' } : { left: '1rem' })}
       zIndex={2}
       colorScheme="green"
       borderRadius="full"
@@ -115,11 +117,17 @@ const SliderArrow = ({ direction, onClick }) => {
   );
 };
 
+// Review card (unchanged from your original)
 const ReviewCard = ({ review }) => {
   const bgColor = useColorModeValue('white', 'gray.800');
   const textColor = useColorModeValue('gray.700', 'gray.200');
   const titleColor = useColorModeValue('gray.800', 'white');
   const isMobile = useBreakpointValue({ base: true, lg: false });
+
+  if (!review) {
+    // If it's a placeholder "null," render an empty box for spacing
+    return <Box width={isMobile ? 'calc(100vw - 80px)' : '350px'} />;
+  }
 
   return (
     <Box
@@ -184,159 +192,222 @@ const ReviewCard = ({ review }) => {
   );
 };
 
-const ReviewsSection = () => {
-  const [currentSlide, setCurrentSlide] = React.useState(0);
-  const [displayedGroup, setDisplayedGroup] = React.useState(0);
-  const [isHovered, setIsHovered] = React.useState(false);
+export default function ReviewsSection() {
   const isMobile = useBreakpointValue({ base: true, lg: false });
   const sectionBg = useColorModeValue('gray.50', 'gray.900');
-  const titleColor = useColorModeValue('green.600', 'green.400');
   const dotColor = useColorModeValue('gray.300', 'gray.600');
   const { colorMode } = useColorMode();
 
-  // Calculate the total number of groups for desktop view (3 reviews per group)
-  const totalGroups = Math.ceil(reviews.length / 3);
+  // Hover state to pause auto-slide
+  const [isHovered, setIsHovered] = React.useState(false);
 
-  const nextSlide = () => {
-    if (isMobile) {
-      setCurrentSlide(prev => (prev + 1) % reviews.length);
-    } else {
-      setDisplayedGroup(prev => (prev + 1) % totalGroups);
+  // We'll manage the current "fake" slide index for infinite loop
+  const [currentSlide, setCurrentSlide] = React.useState(1);
+
+  // ========= 1) Group reviews in sets of 3. Center if leftover. =========
+  const chunkedReviews = React.useMemo(() => {
+    const chunks = [];
+    const step = 3;
+    for (let i = 0; i < reviews.length; i += step) {
+      let group = reviews.slice(i, i + step);
+
+      // If the final group has 1 item, center by [null, item, null]
+      // If the final group has 2 items, center by [item1, item2, null]
+      // 3 or more => no change
+      if (group.length === 1) {
+        group = [null, group[0], null];
+      } else if (group.length === 2) {
+        group = [group[0], group[1], null];
+      }
+      chunks.push(group);
     }
-  };
+    return chunks;
+  }, []);
 
-  const prevSlide = () => {
-    if (isMobile) {
-      setCurrentSlide(prev => (prev - 1 + reviews.length) % reviews.length);
-    } else {
-      setDisplayedGroup(prev => (prev - 1 + totalGroups) % totalGroups);
+  // Total "real" slides
+  const realSlidesCount = chunkedReviews.length;
+
+  // ========= 2) Duplicate slides for infinite loop. =========
+  // We'll prepend the last chunk, append the first chunk
+  const slidesForLoop = React.useMemo(() => {
+    if (realSlidesCount === 1) {
+      // Edge case: if there's only 1 chunk total, just present that chunk
+      // (No infinite looping needed.)
+      return chunkedReviews;
     }
-  };
 
+    const firstChunk = chunkedReviews[0];
+    const lastChunk = chunkedReviews[chunkedReviews.length - 1];
+    return [lastChunk, ...chunkedReviews, firstChunk];
+  }, [chunkedReviews, realSlidesCount]);
+
+  // The total slides in our "duplicated" array
+  const totalSlides = slidesForLoop.length; // realSlidesCount + 2 (usually)
+
+  // If there's truly only 1 chunk, force currentSlide=0 so we don't break
+  React.useEffect(() => {
+    if (realSlidesCount === 1) {
+      setCurrentSlide(0);
+    }
+  }, [realSlidesCount]);
+
+  // === 3) Next / Prev handlers with infinite loop logic ===
+  const nextSlide = React.useCallback(() => {
+    setCurrentSlide(prev => prev + 1);
+  }, []);
+
+  const prevSlide = React.useCallback(() => {
+    setCurrentSlide(prev => prev - 1);
+  }, []);
+
+  // A quick function so dots can jump to a "real" slide index
+  // We map real index => fake index (since we have +2 in the array)
   const goToSlide = index => {
-    if (isMobile) {
-      setCurrentSlide(index);
-    } else {
-      setDisplayedGroup(Math.floor(index / 3));
-    }
+    // real index "0" => fake index "1"
+    // real index "last" => fake index "realSlidesCount"
+    // So the new currentSlide = index + 1
+    setCurrentSlide(index + 1);
   };
+
+  // === 4) Automatic sliding if not hovered ===
+  React.useEffect(() => {
+    if (isHovered || realSlidesCount === 1) return;
+    const timer = setInterval(nextSlide, 7000);
+    return () => clearInterval(timer);
+  }, [isHovered, nextSlide, realSlidesCount]);
+
+  // === 5) Handle the "instant jump" if we cross boundaries ===
+  // If we move from last (fake) slide to first (fake) slide, we jump
+  // (or vice versa) with no transition for a seamless loop
+  const [noTransition, setNoTransition] = React.useState(false);
 
   React.useEffect(() => {
-    let timer;
-    if (!isHovered) {
-      timer = setInterval(nextSlide, 7000);
-    }
-    return () => clearInterval(timer);
-  }, [isHovered, isMobile]);
+    // If only 1 chunk, no infinite loop needed
+    if (realSlidesCount === 1) return;
 
-  // Get the current group of reviews for desktop view
-  const getCurrentGroup = () => {
-    const startIndex = displayedGroup * 3;
-    const currentGroup = reviews.slice(startIndex, startIndex + 3);
-
-    // If it's the last group and there's only one review, center it
-    if (currentGroup.length === 1) {
-      return [null, currentGroup[0], null];
-    } else if (currentGroup.length === 2) {
-      return [currentGroup[0], currentGroup[1], null];
+    let id;
+    if (currentSlide === totalSlides - 1) {
+      // just slid onto the final fake chunk (the duplicated first)
+      // schedule a quick jump to the real first chunk
+      id = setTimeout(() => {
+        setNoTransition(true);
+        setCurrentSlide(1); // "real" slide #1
+      }, 300); // after the CSS transition completes
+    } else if (currentSlide === 0) {
+      // just slid onto the first fake chunk (the duplicated last)
+      // schedule a quick jump to the real last chunk
+      id = setTimeout(() => {
+        setNoTransition(true);
+        setCurrentSlide(realSlidesCount); // the real last chunk
+      }, 300);
+    } else {
+      // We are on a "real" slide, ensure we have transition
+      setNoTransition(false);
     }
-    return currentGroup;
+
+    return () => clearTimeout(id);
+  }, [currentSlide, totalSlides, realSlidesCount]);
+
+  // Transform offset = currentSlide * 100%
+  // If noTransition=true, we skip the smooth animation
+  const trackStyles = {
+    display: 'flex',
+    width: '100%',
+    transition: noTransition ? 'none' : 'transform 0.6s ease-in-out',
+    transform: `translateX(-${currentSlide * 100}%)`,
   };
+
+  // For the pagination "dots," we show realSlidesCount dots
+  // The "active dot" is currentSlide-1 (since we added a leading chunk).
+  // But we clamp that to [0, realSlidesCount-1]
+  const activeDot = React.useMemo(() => {
+    if (realSlidesCount === 1) return 0;
+    let realIndex = currentSlide - 1; // remove the leading chunk
+    if (realIndex < 0) realIndex = realSlidesCount - 1;
+    if (realIndex >= realSlidesCount) realIndex = 0;
+    return realIndex;
+  }, [currentSlide, realSlidesCount]);
 
   return (
     <Box bg={sectionBg} py={16} px={4}>
-      <CustomHeading size={'2xl'}>What Our Customers Say</CustomHeading>
+      <CustomHeading size="2xl">What Our Customers Say</CustomHeading>
+
       <Box
         maxW="1200px"
         mx="auto"
+        position="relative"
+        mt={8}
+        // Outer container can remain overflow visible
+        // so the arrows are not clipped
+        overflow="visible"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        {isMobile ? (
-          <Box position="relative" mx={6}>
-            <ReviewCard review={reviews[currentSlide]} />
-            <SliderArrow direction="prev" onClick={prevSlide} />
-            <SliderArrow direction="next" onClick={nextSlide} />
+        {/* Inner container for the sliding track */}
+        <Box position="relative" overflow="hidden">
+          {/* Track with slides */}
+          <Box style={trackStyles} mb={8}>
+            {slidesForLoop.map((slideGroup, idx) => (
+              <Box
+                key={idx}
+                minWidth="100%"
+                flexShrink={0}
+                display="flex"
+                justifyContent="center"
+              >
+                <SimpleGrid
+                  columns={{ base: 1, lg: 3 }}
+                  spacing={8}
+                  alignItems="flex-start"
+                >
+                  {slideGroup.map((review, cardIndex) => (
+                    <ReviewCard key={cardIndex} review={review} />
+                  ))}
+                </SimpleGrid>
+              </Box>
+            ))}
           </Box>
-        ) : (
-          <Box position="relative">
-            <SimpleGrid columns={{ base: 1, lg: 3 }} spacing={8}>
-              {getCurrentGroup().map((review, index) =>
-                review ? (
-                  <ReviewCard key={index} review={review} />
-                ) : (
-                  <Box key={index} width="350px" /> // Placeholder for centering
-                )
-              )}
-            </SimpleGrid>
-            <SliderArrow direction="prev" onClick={prevSlide} />
-            <SliderArrow direction="next" onClick={nextSlide} />
-          </Box>
-        )}
+        </Box>
 
-        {/* Custom Pagination Dots */}
-        <Flex justify="center" mt={6} gap={3}>
-          {isMobile
-            ? // Mobile pagination - one dot per review
-              reviews.map((_, index) => (
-                <Circle
-                  key={index}
-                  size="3"
-                  as="button"
-                  onClick={() => goToSlide(index)}
-                  bg={currentSlide === index ? 'green.500' : dotColor}
-                  transform={
-                    currentSlide === index ? 'scale(1.25)' : 'scale(1)'
-                  }
-                  transition="all 0.2s"
-                  _hover={{
-                    bg: currentSlide === index ? 'green.500' : 'green.400',
-                  }}
-                  sx={{
-                    '&:focus': {
-                      boxShadow: 'none',
-                      outline:
-                        colorMode === 'dark'
-                          ? '1px solid white'
-                          : '1px solid black',
-                      outlineOffset: '2px',
-                    },
-                  }}
-                  aria-label={`Go to slide ${index + 1}`}
-                />
-              ))
-            : // Desktop pagination - one dot per group of 3
-              Array.from({ length: totalGroups }).map((_, index) => (
-                <Circle
-                  key={index}
-                  size="3"
-                  as="button"
-                  onClick={() => goToSlide(index * 3)}
-                  bg={displayedGroup === index ? 'green.500' : dotColor}
-                  transform={
-                    displayedGroup === index ? 'scale(1.25)' : 'scale(1)'
-                  }
-                  transition="all 0.2s"
-                  _hover={{
-                    bg: displayedGroup === index ? 'green.500' : 'green.400',
-                  }}
-                  sx={{
-                    '&:focus': {
-                      boxShadow: 'none',
-                      outline:
-                        colorMode === 'dark'
-                          ? '1px solid white'
-                          : '1px solid black',
-                      outlineOffset: '2px',
-                    },
-                  }}
-                  aria-label={`Go to group ${index + 1}`}
-                />
-              ))}
-        </Flex>
+        {/* Arrows */}
+        {realSlidesCount > 1 && (
+          <>
+            <SliderArrow direction="prev" onClick={prevSlide} />
+            <SliderArrow direction="next" onClick={nextSlide} />
+          </>
+        )}
       </Box>
+
+      {/* Pagination Dots */}
+      {realSlidesCount > 1 && (
+        <Flex justify="center" mt={6} gap={3}>
+          {Array.from({ length: realSlidesCount }).map((_, index) => (
+            <Circle
+              key={index}
+              size="3"
+              as="button"
+              onClick={() => goToSlide(index)}
+              bg={activeDot === index ? 'green.500' : dotColor}
+              transform={activeDot === index ? 'scale(1.25)' : 'scale(1)'}
+              transition="all 0.2s"
+              _hover={{
+                bg: activeDot === index ? 'green.500' : 'green.400',
+              }}
+              sx={{
+                '&:focus': {
+                  boxShadow: 'none',
+                  outline:
+                    colorMode === 'dark'
+                      ? '1px solid white'
+                      : '1px solid black',
+                  outlineOffset: '2px',
+                },
+              }}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </Flex>
+      )}
     </Box>
   );
-};
-
-export default ReviewsSection;
+}
