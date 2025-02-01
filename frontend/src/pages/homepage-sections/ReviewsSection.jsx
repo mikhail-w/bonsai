@@ -337,6 +337,7 @@ export default function ReviewsSection() {
         mx="auto"
         position="relative"
         mt={8}
+        mb={8}
         // Outer container can remain overflow visible
         // so the arrows are not clipped
         overflow="visible"
