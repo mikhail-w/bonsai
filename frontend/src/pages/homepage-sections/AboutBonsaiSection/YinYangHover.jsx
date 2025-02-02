@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Box,
   Text,
@@ -15,7 +15,6 @@ const MotionPath = motion.path;
 const YinYang = () => {
   const [activeSection, setActiveSection] = useState(null);
   const [isMobile] = useMediaQuery('(max-width: 768px)');
-  const bColor = useColorModeValue('rgba(184, 198, 209, 0.47)', 'gray.800');
   const textColor = useColorModeValue('gray.800', 'white');
   const bgColor = useColorModeValue('#F8F8F8', 'rgba(255, 255, 255, 0.18)');
 

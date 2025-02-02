@@ -1,4 +1,3 @@
-// FeaturesSection.jsx
 import React, {
   Suspense,
   useRef,
@@ -11,7 +10,6 @@ import {
   Flex,
   useColorModeValue,
   Center,
-  Heading,
   useBreakpointValue,
 } from '@chakra-ui/react';
 import Slider from 'react-slick';
@@ -19,10 +17,10 @@ import SliderArrow from './SliderArrow';
 import ScrollIndicator from './ScrollIndicator';
 import { getFeaturesData } from './getFeaturesData';
 import FeatureTitle from './FeatureTitle';
+import CustomHeading from '../../../components/CustomHeading';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import CustomHeading from '../../../components/CustomHeading';
 
 const FeaturesSection = () => {
   const mainBg = useColorModeValue('white', 'gray.800');
@@ -64,7 +62,7 @@ const FeaturesSection = () => {
     if (sliderRef.current) {
       sliderRef.current.slickGoTo(index);
     }
-    startTimer(); // Reset timer when indicator is clicked
+    startTimer();
   };
 
   const handleArrowClick = direction => {
@@ -75,7 +73,7 @@ const FeaturesSection = () => {
         sliderRef.current.slickPrev();
       }
     }
-    startTimer(); // Reset timer when arrow is clicked
+    startTimer();
   };
 
   const baseSliderSettings = {
@@ -129,7 +127,7 @@ const FeaturesSection = () => {
     beforeChange: (oldIndex, newIndex) => {
       setPreviousFeature(oldIndex);
       setCurrentFeature(newIndex);
-      startTimer(); // Reset timer on slide change
+      startTimer();
     },
   };
 
@@ -138,6 +136,7 @@ const FeaturesSection = () => {
       <Center mt={{ base: '0', md: '100' }}>
         <CustomHeading size={'2xl'}>Website Features</CustomHeading>
       </Center>
+
       <Box bg={mainBg} color={textColor} minH="100vh" w="100%">
         <Flex
           gap={{ base: 8, md: 0 }}

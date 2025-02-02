@@ -1,9 +1,8 @@
-import React, { Suspense } from 'react';
+import { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Environment, OrbitControls } from '@react-three/drei';
 import { Center, useBreakpointValue, Box, Spinner } from '@chakra-ui/react';
 import Earth from '../../../public/Earth';
-import SaveTheWorldText from '../../components/SaveTheWorldText';
 import CustomHeading from '../../components/CustomHeading';
 
 // Modular Orbit Controls with Zoom Limits

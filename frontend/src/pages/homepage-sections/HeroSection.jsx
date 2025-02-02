@@ -1,8 +1,7 @@
 import React from 'react';
 import { Box, Text, Flex } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
-import heroSmall from '../../assets/images/h3.png';
-import heroLarge from '../../assets/images/h3.png';
+import heroImage from '../../assets/images/h3.png';
 import CustomButton from '../../components/CustomButton';
 
 // Parent container variants
@@ -50,8 +49,7 @@ function HeroSection() {
       position="relative"
       height="85vh"
       bgImage={{
-        base: `linear-gradient(to right bottom, rgba(126, 213, 111, 0.8), rgba(40, 180, 133, 0.8)), url(${heroSmall})`,
-        md: `linear-gradient(to right bottom, rgba(126, 213, 111, 0.8), rgba(40, 180, 133, 0.8)), url(${heroLarge})`,
+        base: `linear-gradient(to right bottom, rgba(126, 213, 111, 0.8), rgba(40, 180, 133, 0.8)), url(${heroImage})`,
       }}
       bgSize="cover"
       bgPosition="center"

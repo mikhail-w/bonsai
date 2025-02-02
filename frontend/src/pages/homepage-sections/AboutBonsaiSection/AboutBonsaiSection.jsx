@@ -1,10 +1,9 @@
-import React from 'react';
 import { Box, useColorModeValue } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
-import CustomHeading from '../../components/CustomHeading';
+import CustomHeading from '../../../components/CustomHeading';
 import YinYangHover from './YinYangHover';
 
-const AboutBonsaisSection = () => {
+const AboutBonsaiSection = () => {
   const bgColor = useColorModeValue('white', 'gray.800');
 
   const containerVariants = {
@@ -31,7 +30,7 @@ const AboutBonsaisSection = () => {
       transition: {
         duration: 5,
         ease: [0.6, 0.01, 0.05, 0.95],
-        opacity: { duration: 6 },
+        opacity: { duration: 5 },
         y: { duration: 5 },
         scale: { duration: 5 },
       },
@@ -80,4 +79,4 @@ const AboutBonsaisSection = () => {
   );
 };
 
-export default AboutBonsaisSection;
+export default AboutBonsaiSection;
