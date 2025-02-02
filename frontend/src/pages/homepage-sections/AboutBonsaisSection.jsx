@@ -12,7 +12,7 @@ const AboutBonsaisSection = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 2,
+        staggerChildren: 1,
         delayChildren: 0.5,
       },
     },

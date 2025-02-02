@@ -41,7 +41,7 @@ const YinYang = () => {
   };
 
   return (
-    <VStack spacing={8} mt={-4} mb={12} align="center">
+    <VStack spacing={8} mt={-4} align="center">
       <Box
         position="relative"
         width="210px"

@@ -9,7 +9,7 @@ const CustomHeading = ({
   mb = 12,
   padding = '50px',
   fontWeight = '300',
-  color = useColorModeValue('green.600', 'green.300'),
+  color = useColorModeValue('green.600', '#32CD32'),
 
   textTransform = 'uppercase',
   ...rest

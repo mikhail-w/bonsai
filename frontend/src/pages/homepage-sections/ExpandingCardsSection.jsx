@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Box,
   Text,
@@ -7,7 +7,7 @@ import {
   useColorModeValue,
   chakra,
 } from '@chakra-ui/react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import CustomHeading from '../../components/CustomHeading';
 import '../../assets/styles/expanded-cards-section.css';
 
@@ -38,7 +38,6 @@ const images = [
 
 function ExpandingCardsSection() {
   const [activeIndex, setActiveIndex] = useState(null);
-  const [isVisible, setIsVisible] = useState(false);
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   const handleClick = index => {
@@ -61,6 +60,7 @@ function ExpandingCardsSection() {
     visible: {
       opacity: 1,
       transition: {
+        duration: 0.5,
         when: 'beforeChildren',
         staggerChildren: 0.2,
       },
@@ -77,20 +77,16 @@ function ExpandingCardsSection() {
       opacity: 1,
       transition: {
         duration: 0.8,
-        ease: [0.25, 0.1, 0.25, 1],
+        ease: 'easeOut',
       },
     },
   };
 
   const containerVariants = {
-    hidden: {
-      opacity: 0,
-    },
     visible: {
-      opacity: 1,
       transition: {
         delayChildren: 0.4,
-        staggerChildren: 0.15,
+        staggerChildren: 0.2,
       },
     },
   };
@@ -111,105 +107,103 @@ function ExpandingCardsSection() {
   };
 
   return (
-    <AnimatePresence>
-      <Flex
-        as={MotionBox}
-        variants={parentVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.7 }}
-        justify="center"
-        align="center"
-        bg={useColorModeValue('white', 'gray.800')}
-        direction={{ base: 'column', xl: 'row' }}
-        height={{ base: '100vh', md: '110vh' }}
-        marginBottom="100px"
-        style={{
-          opacity: 0,
-          willChange: 'transform, opacity',
-        }}
-      >
-        <MotionBox variants={headingVariants} mb={4}>
-          <CustomHeading mb={0}>Explore Nature</CustomHeading>
-        </MotionBox>
+    <Flex
+      as={MotionBox}
+      variants={parentVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.4 }}
+      justify="center"
+      align="center"
+      bg={useColorModeValue('white', 'gray.800')}
+      direction={{ base: 'column', xl: 'row' }}
+      mt={100}
+      maxH={{ base: '150vh', md: '130vh' }}
+      marginBottom={{ base: '50px', md: '100px' }}
+      style={{
+        willChange: 'transform',
+      }}
+    >
+      <MotionBox variants={headingVariants} mb={4}>
+        <CustomHeading mb={0}>Explore Nature</CustomHeading>
+      </MotionBox>
 
-        <MotionBox
-          variants={containerVariants}
-          width="90vw"
-          display="flex"
-          flexDirection={{ base: 'column', md: 'row' }}
-          overflow="hidden"
-        >
-          {images.map((image, index) => (
-            <MotionBox
-              key={index}
-              variants={cardVariants}
-              custom={index}
-              bgImage={`url(${image.url})`}
-              bgSize="cover"
-              bgPosition="center"
-              bgRepeat="no-repeat"
-              borderRadius="3xl"
-              cursor="pointer"
-              position="relative"
-              m={2}
-              flex={isMobile ? 'none' : activeIndex === index ? 5 : 0.1}
-              height={
-                isMobile ? (activeIndex === index ? '300px' : '100px') : '80vh'
+      <MotionBox
+        variants={containerVariants}
+        width="90vw"
+        display="flex"
+        flexDirection={{ base: 'column', md: 'row' }}
+        overflow="hidden"
+      >
+        {images.map((image, index) => (
+          <MotionBox
+            key={index}
+            variants={cardVariants}
+            custom={index}
+            bgImage={`url(${image.url})`}
+            bgSize="cover"
+            bgPosition="center"
+            bgRepeat="no-repeat"
+            borderRadius="3xl"
+            cursor="pointer"
+            position="relative"
+            m={2}
+            flex={isMobile ? 'none' : activeIndex === index ? 5 : 0.1}
+            height={
+              isMobile ? (activeIndex === index ? '300px' : '100px') : '80vh'
+            }
+            transition="flex 1.5s cubic-bezier(0.25, 0.1, 0.25, 1)"
+            onClick={() => handleClick(index)}
+            style={{
+              willChange: 'transform, flex',
+            }}
+          >
+            <Flex
+              bg={
+                activeIndex === index
+                  ? 'transparent'
+                  : gradients[index % gradients.length]
               }
-              transition="all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1)"
-              onClick={() => handleClick(index)}
-              style={{
-                willChange: 'transform, opacity, flex',
-              }}
+              borderRadius="3xl"
+              height="100%"
+              align={isMobile ? 'flex-end' : 'center'}
+              justify="center"
+              color="white"
+              p={4}
             >
-              <Flex
-                bg={
-                  activeIndex === index
-                    ? 'transparent'
-                    : gradients[index % gradients.length]
-                }
-                borderRadius="3xl"
-                height="100%"
-                align={isMobile ? 'flex-end' : 'center'}
-                justify="center"
-                color="white"
-                p={4}
-              >
-                {activeIndex === index ? (
-                  ''
-                ) : (
-                  <Text
-                    style={{ fontWeight: 100 }}
-                    className={isMobile ? 'horizontal-text' : 'vertical-text'}
-                  >
-                    {image.title}
-                  </Text>
-                )}
-              </Flex>
-              <Box
-                position="absolute"
-                bottom="30px"
-                left="20px"
-                zIndex="1"
-                className={`card__title ${
-                  activeIndex === index ? 'card__title--active' : ''
-                }`}
-                style={{
-                  transitionDelay: activeIndex === index ? '.5s' : '0s',
-                }}
-              >
-                <span
-                  className={`card__title-span card__title-span--${index + 1}`}
+              {activeIndex === index ? (
+                ''
+              ) : (
+                <Text
+                  style={{ fontWeight: 200 }}
+                  className={isMobile ? 'horizontal-text' : 'vertical-text'}
                 >
                   {image.title}
-                </span>
-              </Box>
-            </MotionBox>
-          ))}
-        </MotionBox>
-      </Flex>
-    </AnimatePresence>
+                </Text>
+              )}
+            </Flex>
+            <Box
+              position="absolute"
+              bottom="30px"
+              left="20px"
+              zIndex="1"
+              className={`card__title ${
+                activeIndex === index ? 'card__title--active' : ''
+              }`}
+              style={{
+                transitionDelay: activeIndex === index ? '.5s' : '0s',
+              }}
+            >
+              <span
+                className={`card__title-span card__title-span--${index + 1}`}
+              >
+                {image.title}
+              </span>
+            </Box>
+          </MotionBox>
+        ))}
+      </MotionBox>
+    </Flex>
   );
 }
 

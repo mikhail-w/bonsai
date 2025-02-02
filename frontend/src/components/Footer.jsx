@@ -95,10 +95,10 @@ const Footer = ({ excludePaths = ['/login', '/register', '/profile'] }) => {
     window.scrollTo(0, 0);
   };
 
-  const textColor = useColorModeValue('green.700', 'green.300');
+  const textColor = useColorModeValue('#32CD32', 'green.300');
   const hoverColor = useColorModeValue('white', 'gray.300');
   const backgroundColor = useColorModeValue('gray.800', 'gray.900');
-  const logoTextColor = useColorModeValue('green.700', 'green.300');
+  const logoTextColor = useColorModeValue('#32CD32', 'green.300');
 
   return (
     <>

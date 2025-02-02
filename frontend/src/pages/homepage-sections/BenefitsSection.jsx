@@ -9,22 +9,20 @@ import {
   ModalOverlay,
   ModalContent,
   ModalCloseButton,
-  ModalBody,
-  ModalHeader,
-  ModalFooter,
   Button,
   useDisclosure,
   useColorModeValue,
-  VStack,
   Image,
   useBreakpointValue,
+  ModalFooter,
+  ModalBody,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import h3 from '../../assets/images/hr4.jpg';
 import m1 from '../../assets/images/m1.jpg';
 import m2 from '../../assets/images/m2.jpg';
 import m3 from '../../assets/images/m3.jpg';
-import m4 from '../../assets/images/h5.jpg';
+import m4 from '../../assets/images/m5.jpg';
 import '../../assets/styles/holo.css';
 import CustomHeading from '../../components/CustomHeading';
 
@@ -32,14 +30,10 @@ const BenefitsSection = () => {
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [modalIndex, setModalIndex] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const bgColor = useColorModeValue('white', 'gray.700');
   const textColor = useColorModeValue('gray.900', 'white');
-
-  // Responsive modal layout
-  const modalSize = useBreakpointValue({ base: 'full', md: '2xl', lg: '3xl' });
-  const modalLayout = useBreakpointValue({ base: 'column', md: 'row' });
-  const modalPadding = useBreakpointValue({ base: 4, md: 8 });
-  const modalImageHeight = useBreakpointValue({ base: '200px', md: 'auto' });
+  const headingColor = useColorModeValue('green.700', '#32CD32');
+  const cardBg = useColorModeValue('#F0F7EE', 'rgba(45, 55, 72, 0.8)');
+  const cardBorder = useColorModeValue('gray.200', 'gray.600');
 
   const benefits = [
     {
@@ -47,6 +41,8 @@ const BenefitsSection = () => {
       title: 'Connect with Nature',
       description:
         'Growing bonsai helps foster a deep connection with nature, bringing tranquility and peace into your home.',
+      additional:
+        'Caring for a bonsai fosters mindfulness and appreciation for nature, bringing seasonal beauty and tranquility into your home.',
       image: m1,
     },
     {
@@ -54,6 +50,8 @@ const BenefitsSection = () => {
       title: 'Reduce Stress',
       description:
         'The patience and care required for bonsai cultivation can help reduce stress and promote mindfulness.',
+      additional:
+        'The meditative practice of shaping and nurturing a bonsai helps lower stress, increase focus, and promote a sense of calm.',
       image: m2,
     },
     {
@@ -61,6 +59,8 @@ const BenefitsSection = () => {
       title: 'Improve Air Quality',
       description:
         'Bonsai plants purify the air by filtering toxins, making your indoor environment healthier.',
+      additional:
+        'Bonsai trees filter indoor pollutants and release oxygen, creating a fresher and healthier living environment.',
       image: m3,
     },
     {
@@ -68,6 +68,8 @@ const BenefitsSection = () => {
       title: 'Enhance Home Decor',
       description:
         'Bonsai plants add a touch of elegance and zen to any room, enhancing your home decor naturally.',
+      additional:
+        'A bonsai’s natural elegance and artistic beauty enhance any space, adding a calming and sophisticated touch to your home.',
       image: m4,
     },
   ];
@@ -90,6 +92,11 @@ const BenefitsSection = () => {
     'linear-gradient(to right bottom, rgba(251, 92, 116, 0.8), rgba(227, 67, 51, 0.8))',
   ];
 
+  const overlayGradient = useColorModeValue(
+    'linear-gradient(to right bottom, rgba(126, 213, 111, 0.8), rgba(40, 180, 133, 0.8))',
+    'linear-gradient(to right bottom, rgba(45, 52, 54, 0.8), rgba(25, 42, 86, 0.8))'
+  );
+
   const openModal = index => {
     setModalIndex(index);
     onOpen();
@@ -103,17 +110,23 @@ const BenefitsSection = () => {
           base: `${
             hoveredIndex !== null
               ? overlayColors[hoveredIndex]
-              : 'linear-gradient(to right bottom, rgba(126, 213, 111, 0.8), rgba(40, 180, 133, 0.8))'
+              : overlayGradient
           }, url(${h3})`,
         }}
         bgSize="cover"
+        bgPosition="center"
         transform="skewY(-7deg)"
         mt={-40}
         py={{ base: '6rem', md: '10rem', lg: '15rem' }}
         px={{ base: '1rem', md: '2rem', lg: '4rem' }}
       >
         <Center>
-          <CustomHeading size={'2xl'} color="white" transform="skewY(7deg)">
+          <CustomHeading
+            size="2xl"
+            color="white"
+            transform="skewY(7deg)"
+            textShadow="2px 2px 4px rgba(0, 0, 0, 0.5)"
+          >
             BENEFITS
           </CustomHeading>
         </Center>
@@ -125,11 +138,18 @@ const BenefitsSection = () => {
           >
             {benefits.map((benefit, index) => (
               <Box
-                maxWidth="350px"
-                maxHeight="350px"
-                minHeight="300px"
-                className="holographic-card"
+                bg={cardBg}
+                borderRadius="xl"
+                boxShadow="lg"
+                border="1px solid"
+                borderColor={cardBorder}
+                p={6}
+                transition="all 0.3s ease"
                 key={index}
+                maxW="350px"
+                maxH="350px"
+                minH="300px"
+                className="holographic-card"
                 style={{
                   '--hover-bg-color': hoverColors[index].bg,
                   '--hover-text-color': hoverColors[index].text,
@@ -138,14 +158,22 @@ const BenefitsSection = () => {
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
                 onClick={() => openModal(index)}
+                cursor="pointer"
+                transition="transform 0.3s ease, box-shadow 0.3s ease"
+                _hover={{
+                  transform: 'scale(1.05)',
+                  boxShadow: '0 10px 20px rgba(0, 0, 0, 0.2)',
+                }}
+                borderRadius="lg"
+                overflow="hidden"
               >
                 <Flex
-                  cursor="pointer"
                   direction="column"
                   align="center"
                   justify="center"
                   textAlign="center"
                   height="100%"
+                  p={4}
                 >
                   <Text fontSize="4xl" mb={4}>
                     {benefit.icon}
@@ -164,7 +192,7 @@ const BenefitsSection = () => {
                     className="hoverable-text"
                     fontFamily="lato"
                     fontWeight="400"
-                    color="gray.300"
+                    color={'gray.300'}
                     transition="color 0.5s ease"
                   >
                     {benefit.description}
@@ -176,41 +204,37 @@ const BenefitsSection = () => {
         </Box>
       </Box>
 
-      <Modal
-        isOpen={isOpen}
-        onClose={onClose}
-        size={modalSize}
-        motionPreset="slideInBottom"
-      >
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay
           bg={
-            modalIndex !== null
-              ? overlayColors[modalIndex]
-              : 'rgba(0, 0, 0, 0.8)'
+            modalIndex !== null ? overlayColors[modalIndex] : 'blackAlpha.600'
           }
+          backdropFilter="blur(2px)"
         />
         <ModalContent
-          my={{ base: 0, md: '10vh' }}
-          borderRadius={{ base: 0, md: 'lg' }}
+          maxW={{ base: '95vw', md: '80vw', lg: '900px' }}
+          maxH={{ base: '95vh', md: '85vh' }}
+          borderRadius="xl"
+          boxShadow="xl"
           overflow="hidden"
-          height={{ base: '100vh', md: 'auto' }}
-          maxHeight={{ base: '100vh', md: '80vh' }}
-          marginTop={{ base: 0 }}
         >
           <ModalCloseButton
-            zIndex="10"
-            color={{ base: 'white', md: 'gray.800' }}
-            bg={{ base: 'blackAlpha.400', md: 'transparent' }}
+            zIndex={2}
+            color="white"
+            bg="blackAlpha.400"
             borderRadius="full"
             size="lg"
-            p={2}
+            m={2}
+            _hover={{
+              bg: 'blackAlpha.600',
+            }}
           />
 
-          <Flex direction={modalLayout} height="100%">
+          <Flex direction={{ base: 'column', md: 'row' }} h="100%">
             {/* Image Section */}
             <Box
-              flex={{ base: '0 0 auto', md: '1' }}
-              height={modalImageHeight}
+              w={{ base: '100%', md: '50%' }}
+              h={{ base: '35vh', md: '100%' }}
               position="relative"
             >
               {modalIndex !== null && (
@@ -218,44 +242,81 @@ const BenefitsSection = () => {
                   src={benefits[modalIndex].image}
                   alt={benefits[modalIndex].title}
                   objectFit="cover"
-                  width="100%"
-                  height="100%"
+                  h="100%"
+                  w="100%"
                 />
               )}
             </Box>
 
             {/* Content Section */}
-            <VStack
-              flex="1"
-              p={modalPadding}
-              bg={bgColor}
-              align="stretch"
-              spacing={4}
-              justify="center"
+            <Flex
+              direction="column"
+              w={{ base: '100%', md: '50%' }}
+              bg={cardBg}
+              p={{ base: 6, md: 8 }}
+              justify="space-between"
+              align="center"
+              minH="100%"
             >
-              <ModalHeader p={0} color="green.700">
-                {modalIndex !== null && (
-                  <Flex align="center" gap={4}>
-                    <Text fontSize="3xl">{benefits[modalIndex].icon}</Text>
-                    <Heading size="lg">{benefits[modalIndex].title}</Heading>
+              {modalIndex !== null && (
+                <>
+                  {/* Title Section */}
+                  <Flex direction="column" align="center" mb={4}>
+                    <Text fontSize="3xl" mb={2}>
+                      {benefits[modalIndex].icon}
+                    </Text>
+                    <Heading
+                      size={{ base: 'lg', md: 'xl' }}
+                      // color="green.700"
+                      color={headingColor}
+                      fontFamily="lato"
+                      fontWeight="500"
+                      textAlign="center"
+                    >
+                      {benefits[modalIndex].title}
+                    </Heading>
                   </Flex>
-                )}
-              </ModalHeader>
 
-              <ModalBody p={0}>
-                {modalIndex !== null && (
-                  <Text fontSize="md" color={textColor}>
-                    {benefits[modalIndex].description}
-                  </Text>
-                )}
-              </ModalBody>
-
-              <ModalFooter p={0} mt={4}>
-                <Button colorScheme="green" onClick={onClose}>
-                  Close
-                </Button>
-              </ModalFooter>
-            </VStack>
+                  <ModalBody p={0}>
+                    {modalIndex !== null && (
+                      <Flex
+                        align="center"
+                        justify="center"
+                        height="80%" // Ensures full height
+                        textAlign="center"
+                      >
+                        <Text
+                          fontWeight={{ base: '400', md: '300' }}
+                          fontSize={{ base: 'md', md: 'lg', lg: '2xl' }}
+                          fontFamily="lato"
+                          lineHeight="tall"
+                          color={textColor}
+                        >
+                          {benefits[modalIndex].additional}
+                        </Text>
+                      </Flex>
+                    )}
+                    {/* Button Section */}
+                    <Flex w="full" justify="center" mt={6}>
+                      <Button
+                        colorScheme="green"
+                        size="md"
+                        minW="120px"
+                        onClick={onClose}
+                        borderRadius="full"
+                        _hover={{
+                          transform: 'translateY(-2px)',
+                          boxShadow: 'lg',
+                        }}
+                        transition="all 0.2s"
+                      >
+                        Close
+                      </Button>
+                    </Flex>
+                  </ModalBody>
+                </>
+              )}
+            </Flex>
           </Flex>
         </ModalContent>
       </Modal>

@@ -1,5 +1,5 @@
 import React from 'react';
-import bgImage from '../../assets/images/nat-10.jpg'; // Replace with your actual image path
+import bgImage from '../../assets/images/nat-10.jpg'; // Ensure this path is correct
 import {
   Box,
   Button,
@@ -13,55 +13,60 @@ import {
   HStack,
   useBreakpointValue,
   useColorModeValue,
+  Image,
 } from '@chakra-ui/react';
-import '../../assets/styles/card.css';
 
 const NewsLetterSection = () => {
-  // Determine whether to show the background image based on screen size
-  const showBgImage = useBreakpointValue({ base: false, md: true });
   const bgColor = useColorModeValue('white', 'gray.700');
 
   return (
     <Box
       bgColor="#32b882"
-      h="120vh"
+      minH="100vh"
       display="flex"
       justifyContent="center"
       alignItems="center"
+      px={4}
     >
       <Box
-        w="90%"
-        h="60%"
+        w={{ base: '95%', md: '80%', lg: '70%' }}
+        h={{ base: 'auto', md: '60vh' }}
         maxW="1200px"
         bg="white"
         rounded="lg"
         overflow="hidden"
         shadow="xl"
         display="flex"
+        flexDirection={{ base: 'column', md: 'row' }}
         position="relative"
-        flex="1"
-        backgroundImage={showBgImage ? `url(${bgImage})` : 'none'}
-        backgroundSize="cover"
-        backgroundPosition="220px 0px" // Shift more to the right by 20px
       >
-        {/* Left Form Section */}
+        {/* Left Form Section with Curved Clip Path */}
         <Box
           flex="1"
-          // bg="rgba(255, 255, 255, 0.8)"
           bg={bgColor}
-          p={8}
+          p={{ base: 6, md: 8 }}
           display="flex"
           flexDirection="column"
           justifyContent="center"
-          className="card__form"
-          clipPath={{
-            base: 'none',
-            md: 'polygon(0 0, 60% 0%, 30% 100%, 0% 100%)',
+          position="relative"
+          _before={{
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            width: '100%',
+            height: '100%',
+            bg: bgColor,
+            clipPath: {
+              base: 'none',
+              md: 'path("M100% 0 Q80% 50% 100% 100% L0 100% L0 0 Z")', // Smooth curved transition
+            },
+            zIndex: -1,
           }}
         >
           <Heading
             as="h2"
-            size="lg"
+            size={{ base: 'md', md: 'lg' }}
             mb={6}
             color="green.600"
             textTransform={'uppercase'}
@@ -115,6 +120,22 @@ const NewsLetterSection = () => {
               Next Step →
             </Button>
           </VStack>
+        </Box>
+
+        {/* Image Section on the Right */}
+        <Box
+          flex="1"
+          position="relative"
+          overflow="hidden"
+          display={{ base: 'none', md: 'block' }}
+        >
+          <Image
+            src={bgImage}
+            alt="Newsletter Background"
+            objectFit="cover"
+            w="100%"
+            h="100%"
+          />
         </Box>
       </Box>
     </Box>

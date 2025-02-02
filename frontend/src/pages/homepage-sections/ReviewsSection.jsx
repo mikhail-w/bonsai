@@ -103,7 +103,6 @@ const SliderArrow = ({ direction, onClick }) => {
       position="absolute"
       top="50%"
       transform="translateY(-50%)"
-      // Keep them slightly inside so they aren't cut off
       {...(isNext ? { right: '1rem' } : { left: '1rem' })}
       zIndex={2}
       colorScheme="green"
@@ -193,6 +192,7 @@ const ReviewCard = ({ review }) => {
 };
 
 export default function ReviewsSection() {
+  // Determine if we are in mobile mode
   const isMobile = useBreakpointValue({ base: true, lg: false });
   const sectionBg = useColorModeValue('gray.50', 'gray.900');
   const dotColor = useColorModeValue('gray.300', 'gray.600');
@@ -204,38 +204,42 @@ export default function ReviewsSection() {
   // We'll manage the current "fake" slide index for infinite loop
   const [currentSlide, setCurrentSlide] = React.useState(1);
 
-  // ========= 1) Group reviews in sets of 3. Center if leftover. =========
+  // ============================================
+  // 1) Group reviews based on screen size:
+  //
+  // - On mobile (isMobile === true), group one review per slide.
+  // - On larger screens, group in sets of three (and adjust final groups to center leftover items).
+  // ============================================
   const chunkedReviews = React.useMemo(() => {
     const chunks = [];
-    const step = 3;
+    const step = isMobile ? 1 : 3; // Use 1 card per slide on mobile
     for (let i = 0; i < reviews.length; i += step) {
       let group = reviews.slice(i, i + step);
-
-      // If the final group has 1 item, center by [null, item, null]
-      // If the final group has 2 items, center by [item1, item2, null]
-      // 3 or more => no change
-      if (group.length === 1) {
-        group = [null, group[0], null];
-      } else if (group.length === 2) {
-        group = [group[0], group[1], null];
+      if (!isMobile) {
+        // For non-mobile: if the final group has fewer than 3 items, adjust them so that they are centered
+        if (group.length === 1) {
+          group = [null, group[0], null];
+        } else if (group.length === 2) {
+          group = [group[0], group[1], null];
+        }
       }
       chunks.push(group);
     }
     return chunks;
-  }, []);
+  }, [isMobile]);
 
   // Total "real" slides
   const realSlidesCount = chunkedReviews.length;
 
-  // ========= 2) Duplicate slides for infinite loop. =========
-  // We'll prepend the last chunk, append the first chunk
+  // ============================================
+  // 2) Duplicate slides for infinite loop.
+  //    We prepend the last chunk and append the first chunk.
+  // ============================================
   const slidesForLoop = React.useMemo(() => {
     if (realSlidesCount === 1) {
-      // Edge case: if there's only 1 chunk total, just present that chunk
-      // (No infinite looping needed.)
+      // Edge case: if there's only 1 chunk total, just present that chunk (no infinite looping needed).
       return chunkedReviews;
     }
-
     const firstChunk = chunkedReviews[0];
     const lastChunk = chunkedReviews[chunkedReviews.length - 1];
     return [lastChunk, ...chunkedReviews, firstChunk];
@@ -251,7 +255,9 @@ export default function ReviewsSection() {
     }
   }, [realSlidesCount]);
 
-  // === 3) Next / Prev handlers with infinite loop logic ===
+  // ============================================
+  // 3) Next / Prev handlers with infinite loop logic
+  // ============================================
   const nextSlide = React.useCallback(() => {
     setCurrentSlide(prev => prev + 1);
   }, []);
@@ -260,56 +266,50 @@ export default function ReviewsSection() {
     setCurrentSlide(prev => prev - 1);
   }, []);
 
-  // A quick function so dots can jump to a "real" slide index
-  // We map real index => fake index (since we have +2 in the array)
+  // Function for pagination dots to jump to a "real" slide index.
   const goToSlide = index => {
     // real index "0" => fake index "1"
-    // real index "last" => fake index "realSlidesCount"
-    // So the new currentSlide = index + 1
     setCurrentSlide(index + 1);
   };
 
-  // === 4) Automatic sliding if not hovered ===
+  // ============================================
+  // 4) Automatic sliding if not hovered
+  // ============================================
   React.useEffect(() => {
     if (isHovered || realSlidesCount === 1) return;
     const timer = setInterval(nextSlide, 7000);
     return () => clearInterval(timer);
   }, [isHovered, nextSlide, realSlidesCount]);
 
-  // === 5) Handle the "instant jump" if we cross boundaries ===
-  // If we move from last (fake) slide to first (fake) slide, we jump
-  // (or vice versa) with no transition for a seamless loop
+  // ============================================
+  // 5) Handle the "instant jump" for seamless infinite looping.
+  // ============================================
   const [noTransition, setNoTransition] = React.useState(false);
 
   React.useEffect(() => {
-    // If only 1 chunk, no infinite loop needed
     if (realSlidesCount === 1) return;
 
     let id;
     if (currentSlide === totalSlides - 1) {
-      // just slid onto the final fake chunk (the duplicated first)
-      // schedule a quick jump to the real first chunk
+      // Slid onto the final fake chunk (duplicated first)
       id = setTimeout(() => {
         setNoTransition(true);
-        setCurrentSlide(1); // "real" slide #1
-      }, 300); // after the CSS transition completes
+        setCurrentSlide(1); // Jump to the real first chunk
+      }, 300);
     } else if (currentSlide === 0) {
-      // just slid onto the first fake chunk (the duplicated last)
-      // schedule a quick jump to the real last chunk
+      // Slid onto the first fake chunk (duplicated last)
       id = setTimeout(() => {
         setNoTransition(true);
-        setCurrentSlide(realSlidesCount); // the real last chunk
+        setCurrentSlide(realSlidesCount); // Jump to the real last chunk
       }, 300);
     } else {
-      // We are on a "real" slide, ensure we have transition
       setNoTransition(false);
     }
 
     return () => clearTimeout(id);
   }, [currentSlide, totalSlides, realSlidesCount]);
 
-  // Transform offset = currentSlide * 100%
-  // If noTransition=true, we skip the smooth animation
+  // Track styles for sliding the slides
   const trackStyles = {
     display: 'flex',
     width: '100%',
@@ -317,12 +317,12 @@ export default function ReviewsSection() {
     transform: `translateX(-${currentSlide * 100}%)`,
   };
 
-  // For the pagination "dots," we show realSlidesCount dots
-  // The "active dot" is currentSlide-1 (since we added a leading chunk).
-  // But we clamp that to [0, realSlidesCount-1]
+  // ============================================
+  // 6) Pagination Dots: map the "real" slide index to the current slide.
+  // ============================================
   const activeDot = React.useMemo(() => {
     if (realSlidesCount === 1) return 0;
-    let realIndex = currentSlide - 1; // remove the leading chunk
+    let realIndex = currentSlide - 1;
     if (realIndex < 0) realIndex = realSlidesCount - 1;
     if (realIndex >= realSlidesCount) realIndex = 0;
     return realIndex;
@@ -338,15 +338,12 @@ export default function ReviewsSection() {
         position="relative"
         mt={8}
         mb={8}
-        // Outer container can remain overflow visible
-        // so the arrows are not clipped
         overflow="visible"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        {/* Inner container for the sliding track */}
+        {/* Slider Track */}
         <Box position="relative" overflow="hidden">
-          {/* Track with slides */}
           <Box style={trackStyles} mb={8}>
             {slidesForLoop.map((slideGroup, idx) => (
               <Box
@@ -356,6 +353,11 @@ export default function ReviewsSection() {
                 display="flex"
                 justifyContent="center"
               >
+                {/* 
+                  The SimpleGrid is configured to use 1 column on mobile (base)
+                  and 3 columns on large screens (lg). Since our grouping now 
+                  depends on isMobile, on mobile each slide will contain only one review.
+                */}
                 <SimpleGrid
                   columns={{ base: 1, lg: 3 }}
                   spacing={8}
