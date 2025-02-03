@@ -1,155 +1,184 @@
-import React, { useRef } from 'react';
-import {
-  Box,
-  Avatar,
-  useBreakpointValue,
-  useColorModeValue,
-} from '@chakra-ui/react';
-import { useLocation, useNavigate } from 'react-router-dom';
+// src/components/Navigation/Navigation.jsx
+import React, { useEffect, useRef, useState } from 'react';
+import { Box, Flex } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
-import Hamburger from 'hamburger-react';
-import { motion } from 'framer-motion';
-import { useScrollPosition } from './useScrollPosition';
-import { useMenuAnimation } from './useMenuAnimation';
-import { useOutsideClick } from './useOutsideClick';
-import { NavigationLink } from './NavigationLink';
-import { ShopMenu } from './ShopMenu';
-import { Logo } from './Logo';
-import { getLinkPosition } from './navigationUtils';
-import { cleanMediaPath } from './utils/urlUtils';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useToast } from '@chakra-ui/react';
+import { logout } from '../../actions/userActions';
+import { clearCart } from '../../actions/cartActions';
+
+import Logo from './Logo';
+import HamburgerMenu from './HamburgerMenu';
+import NavLinks from './NavLinks';
 import SearchBar from '../SearchBar';
 import ColorModeSwitcher from '../ColorModeSwitcher';
 
+// Import images
+import logo from '../../assets/images/logo.png';
+import logo_white from '../../assets/images/logo_white.png';
+
 const Navigation = () => {
+  // Local state
+  const [isOpen, setIsOpen] = useState(false);
+  const [isCircleAnimationDone, setIsCircleAnimationDone] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [isShopHovered, setIsShopHovered] = useState(false);
+  const [hoveredLink, setHoveredLink] = useState('default');
   const menuRef = useRef(null);
+
+  // Redux & router hooks
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const isMobile = useBreakpointValue({ base: true, md: false });
-  const bgColor = useColorModeValue('white', '#2A3439');
+  const toast = useToast();
 
-  const scrolled = useScrollPosition();
-  const { isOpen, isCircleAnimationDone, toggleMenu, setIsOpen } =
-    useMenuAnimation();
-  useOutsideClick(menuRef, () => setIsOpen(false));
+  // Redux state
+  const { userInfo } = useSelector(state => state.userLogin);
+  const { cartItems } = useSelector(state => state.cart);
 
-  const userLogin = useSelector(state => state.userLogin);
-  const cart = useSelector(state => state.cart);
-  const { userInfo } = userLogin;
-  const { cartItems } = cart;
+  // Choose the logo based on scroll and route
+  const logoSrc = pathname === '/' && !scrolled ? logo_white : logo;
 
-  // Navigation configuration and utility functions...
-  // (Keep the existing navLinks, submenuLinks, linkColors, and other configurations)
+  // Toggle the menu and handle the circle animation timing
+  const toggleMenu = () => {
+    setIsOpen(prev => !prev);
+    if (!isOpen) {
+      setIsCircleAnimationDone(false);
+      setTimeout(() => setIsCircleAnimationDone(true), 800);
+    }
+  };
 
+  // Click handlers
+  const handleLinkClick = () => setIsOpen(false);
+
+  const handleBlogClick = () => {
+    setIsOpen(false);
+    if (!userInfo) {
+      navigate('/login');
+    } else {
+      navigate('/blog');
+    }
+  };
+
+  const logoutHandler = () => {
+    dispatch(logout());
+    dispatch(clearCart());
+    setIsOpen(false);
+    navigate('/');
+    toast({
+      title: `User has Logged Out`,
+      status: 'info',
+      isClosable: true,
+      duration: 3000,
+      render: () => (
+        <Box
+          color="white"
+          p={3}
+          bg="linear-gradient(to right, rgba(255, 81, 47), rgba(221, 36, 118))"
+          borderRadius="md"
+          textAlign="center"
+        >
+          User is Logged Out
+        </Box>
+      ),
+    });
+  };
+
+  // Navigation links definition (the icons will be rendered in NavLinks)
+  const navLinks = [
+    userInfo
+      ? { label: 'Logout', action: logoutHandler }
+      : { label: 'Login', url: '/login' },
+    { label: 'Blog', url: '/blog' },
+    { label: 'Cart', url: '/cart' },
+    { label: 'Shop', url: '/products' },
+  ];
+
+  // Submenu items for the Shop link
+  const submenuLinks = [
+    { label: 'Plants', url: '/plants' },
+    { label: 'Planters', url: '/planters' },
+    { label: 'Essentials', url: '/essentials' },
+  ];
+
+  // Close the menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = event => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    if (isOpen) document.addEventListener('mousedown', handleClickOutside);
+    else document.removeEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
+  // Update “scrolled” state based on window scroll position
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 0);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Optionally hide the navigation on certain routes
   const withoutSidebarRoutes = ['/profile', '/login', '/register'];
   if (withoutSidebarRoutes.some(item => pathname.includes(item))) return null;
 
   return (
     <Box ref={menuRef}>
-      <Box>
-        <Logo logoSrc={pathname === '/' && !scrolled ? logo_white : logo} />
-
-        <Box position="fixed" right={8} top={10} zIndex="10">
-          {/* Menu Circle Animation */}
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: isOpen ? 15 : 0 }}
-            transition={{ duration: 0.8, ease: 'easeInOut' }}
-            style={{
-              position: 'absolute',
-              width: '50px',
-              height: '50px',
-              borderRadius: '50%',
-              background: linkColors[hoveredLink],
-              backdropFilter: 'blur(5px)',
-              zIndex: 1,
-            }}
+      <Flex>
+        <Logo logoSrc={logoSrc} />
+        <HamburgerMenu
+          isOpen={isOpen}
+          toggleMenu={toggleMenu}
+          hoveredLink={hoveredLink}
+          setHoveredLink={setHoveredLink}
+          isCircleAnimationDone={isCircleAnimationDone}
+          userInfo={userInfo}
+        />
+        {isOpen && isCircleAnimationDone && (
+          <NavLinks
+            navLinks={navLinks}
+            submenuLinks={submenuLinks}
+            handleLinkClick={handleLinkClick}
+            handleBlogClick={handleBlogClick}
+            cartItems={cartItems}
+            isShopHovered={isShopHovered}
+            setIsShopHovered={setIsShopHovered}
+            setHoveredLink={setHoveredLink}
           />
-
-          {/* Hamburger Button */}
-          <Box
-            width="50px"
-            height="50px"
-            borderRadius="full"
-            bg="white"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            boxShadow="md"
-            zIndex="2"
-            transition="all 0.3s ease-in-out"
-            _hover={{
-              transform: 'scale(1.09)',
-              boxShadow: '0 0 15px 5px rgba(255, 255, 255, 0.2)',
-            }}
-          >
-            <Hamburger
-              toggled={isOpen}
-              toggle={toggleMenu}
-              rounded
-              easing="ease-in"
-              color="#333333"
-            />
-          </Box>
-
-          {/* Navigation Menu Content */}
-          {isOpen && isCircleAnimationDone && (
-            <>
-              {/* User Avatar */}
-              {userInfo && (
-                <RouterLink to="/profile">
-                  <Avatar
-                    src={cleanMediaPath(
-                      userInfo.avatar || 'default/avatar.jpg',
-                      import.meta.env.VITE_API_BASE_URL
-                    )}
-                    size="md"
-                    position="absolute"
-                    top="0px"
-                    right="70px"
-                    zIndex="5"
-                  />
-                </RouterLink>
-              )}
-
-              {/* Navigation Links */}
-              {navLinks.map((link, index) => (
-                <NavigationLink
-                  key={link.label}
-                  link={link}
-                  position={getLinkPosition(index, navLinks.length, 320)}
-                  isOpen={isOpen}
-                  handleLinkClick={() => {
-                    setIsOpen(false);
-                    if (link.action) link.action();
-                  }}
-                  cartItems={cartItems}
-                />
-              ))}
-
-              {/* Search Bar and Color Mode Switcher */}
-              <Box
-                position="absolute"
-                width={200}
-                top={-10}
-                right={100}
-                zIndex={3000}
-              >
-                <SearchBar />
-              </Box>
-              <Box
-                position="absolute"
-                width={200}
-                top={10}
-                right={-150}
-                zIndex={3000}
-              >
-                <ColorModeSwitcher />
-              </Box>
-            </>
-          )}
-        </Box>
-      </Box>
+        )}
+        {isOpen && isCircleAnimationDone && (
+          <>
+            <Box
+              position="absolute"
+              width={200}
+              top={-10}
+              right={100}
+              display="flex"
+              alignItems="center"
+              mt="2rem"
+              zIndex={3000}
+            >
+              <SearchBar />
+            </Box>
+            <Box
+              position="absolute"
+              width={200}
+              top={10}
+              right={-150}
+              display="flex"
+              alignItems="center"
+              mt="2rem"
+              zIndex={3000}
+            >
+              <ColorModeSwitcher />
+            </Box>
+          </>
+        )}
+      </Flex>
     </Box>
   );
 };
