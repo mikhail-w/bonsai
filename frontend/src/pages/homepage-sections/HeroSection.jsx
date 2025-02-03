@@ -4,48 +4,42 @@ import { motion } from 'framer-motion';
 import heroImage from '../../assets/images/h3.png';
 import CustomButton from '../../components/CustomButton';
 
-// Parent container variants
-const containerVariants = {
-  initial: {},
-  animate: {
-    transition: {
-      // Wait a bit longer before the first child animates
-      delayChildren: 0.9,
-      // Delay more between child animations
-      staggerChildren: 1,
-    },
-  },
-};
+const MotionBox = motion(Box);
+const MotionText = motion(Text);
 
-// Child fade + slide-up variant
-const fadeUpChild = {
-  initial: { opacity: 0, y: 60 }, // Slightly larger y-offset for a smoother slide
-  animate: {
+// **Title Animation (Runs First)**
+const titleFadeUp = {
+  hidden: { opacity: 0, y: 60 },
+  visible: {
     opacity: 1,
     y: 0,
-    transition: {
-      // Increase duration for a slower, smoother appearance
-      duration: 1.2,
-      ease: 'easeInOut',
-    },
+    transition: { duration: 1.5, ease: 'easeOut' },
   },
 };
 
-// Child fade-only variant (for the sub-text)
-const fadeInChild = {
-  initial: { opacity: 0 },
-  animate: {
+// **Subtitle Animation (Appears After Title Finishes)**
+const subtitleFadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
     opacity: 1,
-    transition: {
-      duration: 1.2,
-      ease: 'easeInOut',
-    },
+    y: 0,
+    transition: { duration: 1.2, ease: 'easeOut', delay: 1.5 }, // Waits for title to finish
   },
 };
 
-function HeroSection() {
+// **Button Animation (Appears Last)**
+const buttonFadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 1.2, ease: 'easeOut', delay: 2.5 }, // Waits for subtitle to finish
+  },
+};
+
+const HeroSection = () => {
   return (
-    <Box
+    <MotionBox
       position="relative"
       height="85vh"
       bgImage={{
@@ -60,6 +54,8 @@ function HeroSection() {
       textAlign="center"
       zIndex="1"
       flexDirection="column"
+      initial="hidden"
+      animate="visible"
     >
       {/* Hero Overlay */}
       <Box
@@ -72,48 +68,45 @@ function HeroSection() {
         zIndex="2"
       />
 
-      {/* Hero Content with staggered children */}
+      {/* Hero Content */}
       <Flex
-        as={motion.div}
         flexDirection="column"
         alignItems="center"
         position="relative"
         zIndex="3"
-        variants={containerVariants} // Parent variants
-        initial="initial"
-        animate="animate"
       >
-        {/* Child 1: Heading */}
-        <Text
-          as={motion.p}
-          variants={fadeUpChild}
+        {/* Title (Appears First) */}
+        <MotionText
           color="white"
           fontWeight={300}
           fontFamily="lato"
           fontSize={{ base: '3.2rem', md: '6rem', lg: '8rem' }}
           letterSpacing="0.3rem"
           mb={2}
+          variants={titleFadeUp}
+          initial="hidden"
+          animate="visible"
         >
           BONSAI
-        </Text>
+        </MotionText>
 
-        {/* Child 2: Sub-Text */}
-        <Text
-          as={motion.p}
-          variants={fadeInChild}
+        {/* Subtitle (Appears After Title Finishes) */}
+        <MotionText
           fontWeight={300}
           fontFamily="lato"
-          // fontSize="sm"
           fontSize={{ base: '.65rem', md: '1rem', lg: '1.2rem' }}
           color="white"
           mb={3}
           textTransform="uppercase"
+          variants={subtitleFadeUp}
+          initial="hidden"
+          animate="visible"
         >
           Cultivating Serenity
-        </Text>
+        </MotionText>
 
-        {/* Child 3: Button */}
-        <Box as={motion.div} variants={fadeUpChild}>
+        {/* Button (Appears Last, After Subtitle) */}
+        <MotionBox variants={buttonFadeUp} initial="hidden" animate="visible">
           <CustomButton
             to="/products"
             color="black"
@@ -129,10 +122,10 @@ function HeroSection() {
           >
             EXPLORE NATURE
           </CustomButton>
-        </Box>
+        </MotionBox>
       </Flex>
-    </Box>
+    </MotionBox>
   );
-}
+};
 
 export default HeroSection;

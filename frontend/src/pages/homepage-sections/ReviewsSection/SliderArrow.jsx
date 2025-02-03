@@ -4,7 +4,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 
 const SliderArrow = ({ direction, onClick }) => {
   const positionValue = useBreakpointValue({
-    base: '.5px',
+    base: '2px',
     md: '1px',
   });
 
@@ -20,10 +20,13 @@ const SliderArrow = ({ direction, onClick }) => {
         ? { right: positionValue }
         : { left: positionValue })}
       zIndex={2}
-      colorScheme="green"
+      color={'white'}
+      backgroundColor={'#38a169'}
       borderRadius="full"
       size="lg"
       _hover={{ transform: 'translateY(-50%) scale(1.1)' }}
+      _active={{ backgroundColor: '#38a169' }}
+      _focus={{ boxShadow: 'none', backgroundColor: '#38a169' }}
       transition="all 0.2s"
     />
   );

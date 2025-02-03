@@ -4,11 +4,16 @@ import { motion } from 'framer-motion';
 import CustomButton from '../../../components/CustomButton';
 import CustomHeading from '../../../components/CustomHeading';
 import FeaturedProductCard from './FeaturedProductCard';
-import { headingVariants, cardsContainerVariants } from './animations';
+import {
+  headingVariants,
+  cardsContainerVariants,
+  buttonVariants,
+} from './animations';
 import { products } from './products';
 
 const FeaturedProductsSection = () => {
   const [flipped, setFlipped] = useState(Array(products.length).fill(false));
+  const [showButton, setShowButton] = useState(false); // Track when animation is done
 
   const handleToggleFlip = index => {
     setFlipped(prevFlipped =>
@@ -37,7 +42,10 @@ const FeaturedProductsSection = () => {
           </CustomHeading>
         </motion.div>
 
-        <motion.div variants={cardsContainerVariants}>
+        <motion.div
+          variants={cardsContainerVariants}
+          onAnimationComplete={() => setShowButton(true)} // Set showButton to true after animation
+        >
           <SimpleGrid
             columns={{ base: 1, md: 2, lg: 3 }}
             spacing={10}
@@ -56,9 +64,18 @@ const FeaturedProductsSection = () => {
             ))}
           </SimpleGrid>
 
-          <CustomButton to="/products" mt={20}>
-            Shop All Bonsai
-          </CustomButton>
+          {/* Button appears only after animations are complete */}
+          {showButton && (
+            <motion.div
+              variants={buttonVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              <CustomButton to="/products" mt={20}>
+                Shop All Bonsai
+              </CustomButton>
+            </motion.div>
+          )}
         </motion.div>
       </motion.div>
     </Box>

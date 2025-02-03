@@ -46,10 +46,11 @@ function ExpandingCardsSection() {
 
       <MotionBox
         variants={containerVariants}
-        width="90vw"
+        width="100vw" // Keep it within viewport
+        maxWidth="100vw" // Prevent horizontal overflow
         display="flex"
         flexDirection={{ base: 'column', md: 'row' }}
-        overflow="hidden"
+        overflow="hidden" // Hide any overflow that could push navbar out
       >
         {images.map((image, index) => (
           <ExpandingCard

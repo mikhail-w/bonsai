@@ -19,9 +19,16 @@ function ExpandingCard({ index, image, activeIndex, handleClick, isMobile }) {
       cursor="pointer"
       position="relative"
       m={2}
+      flexShrink={0} // Prevent layout shifts
+      minWidth="0" // Ensure it doesn't force width expansion
+      maxWidth="100vw" // Keep inside viewport
       flex={isMobile ? 'none' : activeIndex === index ? 5 : 0.1}
       height={isMobile ? (activeIndex === index ? '300px' : '100px') : '80vh'}
-      transition="flex 1.5s cubic-bezier(0.25, 0.1, 0.25, 1)"
+      transition={
+        isMobile
+          ? 'height 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
+          : 'flex 1.5s cubic-bezier(0.25, 0.1, 0.25, 1), height 1.2s ease-in-out'
+      }
       onClick={() => handleClick(index)}
     >
       <Flex

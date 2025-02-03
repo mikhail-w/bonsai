@@ -29,3 +29,16 @@ export const cardVariants = {
     transition: { duration: 0.9, ease: 'easeOut' },
   },
 };
+
+export const buttonVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: 0.5, // Adjust the delay based on card animation duration
+      duration: 0.5,
+      ease: 'easeOut',
+    },
+  },
+};

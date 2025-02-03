@@ -111,13 +111,15 @@ const BenefitsSection = () => {
           </Center>
         </Box>
 
-        <Box transform="skewY(7deg)">
+        <Center transform="skewY(7deg)">
           <MotionSimpleGrid
             columns={{ base: 1, sm: 2, md: 2, lg: 4 }}
-            spacing={10}
+            spacing={20}
             variants={containerVariants}
             initial="hidden"
             animate={cardsControls}
+            justifyContent="center" // Centering the grid items
+            alignItems="center"
           >
             {benefits.map((benefit, index) => (
               <motion.div key={index} variants={cardVariants}>
@@ -131,7 +133,7 @@ const BenefitsSection = () => {
               </motion.div>
             ))}
           </MotionSimpleGrid>
-        </Box>
+        </Center>
       </MotionBox>
 
       <BenefitModal
