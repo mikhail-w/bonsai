@@ -9,6 +9,8 @@ const MotionBox = chakra(motion.div);
 function ExpandingCard({ index, image, activeIndex, handleClick, isMobile }) {
   return (
     <MotionBox
+      // Enable layout animations for smooth transitions
+      layout
       variants={cardVariants}
       custom={index}
       bgImage={`url(${image.url})`}
@@ -19,17 +21,22 @@ function ExpandingCard({ index, image, activeIndex, handleClick, isMobile }) {
       cursor="pointer"
       position="relative"
       m={2}
-      flexShrink={0} // Prevent layout shifts
-      minWidth="0" // Ensure it doesn't force width expansion
-      maxWidth="100vw" // Keep inside viewport
+      flexShrink={0}
+      minWidth="0"
+      maxWidth="100vw"
       flex={isMobile ? 'none' : activeIndex === index ? 5 : 0.1}
       height={isMobile ? (activeIndex === index ? '300px' : '100px') : '80vh'}
+      // Adjust the transition values for mobile mode to be smoother.
       transition={
         isMobile
-          ? 'height 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
+          ? {
+              height: { duration: 0.8, ease: 'easeOut' },
+              flex: { duration: 0.8, ease: 'easeOut' },
+            }
           : 'flex 1.5s cubic-bezier(0.25, 0.1, 0.25, 1), height 1.2s ease-in-out'
       }
       onClick={() => handleClick(index)}
+      willChange="height, flex"
     >
       <Flex
         bg={

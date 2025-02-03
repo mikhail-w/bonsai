@@ -24,7 +24,8 @@ const FeaturedProductsSection = () => {
   return (
     <Box
       mt={50}
-      mb={100}
+      // mb={100}
+      mb={{ base: '0', md: '100' }}
       py={16}
       textAlign="center"
       bg={useColorModeValue('white', 'gray.800')}

@@ -38,27 +38,22 @@ const BenefitsSection = () => {
   // Ref for section visibility
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, {
-    threshold: 0.9,
+    threshold: 0.5,
     once: true,
   });
 
-  // Handle animation sequence
   useEffect(() => {
-    const sequence = async () => {
-      if (isInView) {
-        // Reset animations
+    if (isInView) {
+      const timeout = setTimeout(async () => {
         await headerControls.set('hidden');
         await cardsControls.set('hidden');
 
-        // Start header animation
         await headerControls.start('visible');
-
-        // Start cards animation after header finishes
         await cardsControls.start('visible');
-      }
-    };
+      }, 500); // Delay in milliseconds (500ms = 0.5 seconds)
 
-    sequence();
+      return () => clearTimeout(timeout); // Cleanup timeout to prevent memory leaks
+    }
   }, [isInView, headerControls, cardsControls]);
 
   const openModal = index => {

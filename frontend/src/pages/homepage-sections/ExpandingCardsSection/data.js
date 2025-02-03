@@ -1,22 +1,27 @@
+import c1 from '../../../assets/images/card/c1.jpg';
+import c2 from '../../../assets/images/card/c2.jpg';
+import c3 from '../../../assets/images/card/c3.jpg';
+import c4 from '../../../assets/images/card/c4.jpg';
+import c5 from '../../../assets/images/card/c5.jpg';
 export const images = [
   {
-    url: 'https://images.unsplash.com/photo-1707327956851-30a531b70cda?...',
+    url: c1,
     title: 'Dive The Oceans',
   },
   {
-    url: 'https://images.unsplash.com/photo-1416949929422-a1d9c8fe84af?...',
+    url: c2,
     title: 'See The Sights',
   },
   {
-    url: 'https://images.unsplash.com/photo-1520601865139-98afd47b8b3c?...',
+    url: c3,
     title: 'Walk The Beaches',
   },
   {
-    url: 'https://images.unsplash.com/photo-1558022103-603c34ab10ce?...',
+    url: c4,
     title: 'Explore The Forest',
   },
   {
-    url: 'https://images.unsplash.com/photo-1528183429752-a97d0bf99b5a?...',
+    url: c5,
     title: 'Climb A Tree',
   },
 ];

@@ -41,16 +41,18 @@ function ExpandingCardsSection() {
       marginBottom={{ base: '50px', md: '100px' }}
     >
       <MotionBox variants={headingVariants} mb={4}>
-        <CustomHeading mb={0}>Explore Nature</CustomHeading>
+        <CustomHeading size="2xl" mb={0}>
+          Explore Nature
+        </CustomHeading>
       </MotionBox>
 
       <MotionBox
         variants={containerVariants}
-        width="100vw" // Keep it within viewport
-        maxWidth="100vw" // Prevent horizontal overflow
+        width="100vw"
+        maxWidth="100vw"
         display="flex"
         flexDirection={{ base: 'column', md: 'row' }}
-        overflow="hidden" // Hide any overflow that could push navbar out
+        overflow="hidden"
       >
         {images.map((image, index) => (
           <ExpandingCard

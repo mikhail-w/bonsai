@@ -137,7 +137,7 @@ const FeaturesSection = () => {
         <CustomHeading size={'2xl'}>Website Features</CustomHeading>
       </Center>
 
-      <Box bg={mainBg} color={textColor} minH="100vh" w="100%">
+      <Box mb={100} bg={mainBg} color={textColor} w="100%">
         <Flex
           gap={{ base: 8, md: 0 }}
           mt="50"

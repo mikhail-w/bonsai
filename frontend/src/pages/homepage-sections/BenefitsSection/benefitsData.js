@@ -1,6 +1,5 @@
-import { useColorModeValue } from '@chakra-ui/react';
-import m1 from '../../../assets/images/m1.jpg';
-import m2 from '../../../assets/images/m2.jpg';
+import m1 from '../../../assets/images/m8.jpg';
+import m2 from '../../../assets/images/m7.jpg';
 import m3 from '../../../assets/images/m3.jpg';
 import m4 from '../../../assets/images/m5.jpg';
 

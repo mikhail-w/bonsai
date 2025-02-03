@@ -98,7 +98,7 @@ const Footer = ({ excludePaths = ['/login', '/register', '/profile'] }) => {
   const textColor = useColorModeValue('#32CD32', 'green.300');
   const hoverColor = useColorModeValue('white', 'gray.300');
   const backgroundColor = useColorModeValue('gray.800', 'gray.900');
-  const logoTextColor = useColorModeValue('#32CD32', 'green.300');
+  const logoTextColor = useColorModeValue('white', 'green.300');
 
   return (
     <>
