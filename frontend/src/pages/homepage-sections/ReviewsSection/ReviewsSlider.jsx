@@ -6,33 +6,35 @@ import PaginationDots from './PaginationDots';
 import reviews from './reviews';
 
 const ReviewsSlider = () => {
-  const [currentSlide, setCurrentSlide] = useState(1); // Start at 1 to account for cloned slide
+  const [currentSlide, setCurrentSlide] = useState(1);
   const [isAnimating, setIsAnimating] = useState(false);
   const [noTransition, setNoTransition] = useState(false);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
   const isMobile = useBreakpointValue({ base: true, lg: false });
   const chunkSize = isMobile ? 1 : 3;
   const sliderRef = useRef(null);
+  const autoplayRef = useRef(null);
 
-  // Create chunked reviews with cloned slides for infinite scroll
+  // Minimum swipe distance (in px)
+  const minSwipeDistance = 50;
+
   const chunkedReviews = useMemo(() => {
     const chunks = [];
     for (let i = 0; i < reviews.length; i += chunkSize) {
       let group = reviews.slice(i, i + chunkSize);
       if (!isMobile) {
         if (group.length === 1) {
-          group = [null, group[0], null]; // Center single item
+          group = [null, group[0], null];
         } else if (group.length === 2) {
-          group = [null, ...group]; // Center two items
+          group = [null, ...group];
         }
       }
       chunks.push(group);
     }
-
-    // Clone first and last slides for smooth infinite scroll
     return [chunks[chunks.length - 1], ...chunks, chunks[0]];
   }, [isMobile]);
 
-  // Handle the infinite scroll transition
   const handleTransitionEnd = useCallback(() => {
     setIsAnimating(false);
 
@@ -57,35 +59,129 @@ const ReviewsSlider = () => {
   const goToSlide = index => {
     if (!isAnimating) {
       setIsAnimating(true);
-      setCurrentSlide(index + 1); // Add 1 to account for cloned slide
+      setCurrentSlide(index + 1);
     }
   };
 
-  const nextSlide = () => {
+  const nextSlide = useCallback(() => {
     if (!isAnimating) {
       setIsAnimating(true);
       setCurrentSlide(prev => prev + 1);
     }
-  };
+  }, [isAnimating]);
 
-  const prevSlide = () => {
+  const prevSlide = useCallback(() => {
     if (!isAnimating) {
       setIsAnimating(true);
       setCurrentSlide(prev => prev - 1);
     }
+  }, [isAnimating]);
+
+  // Handle touch events
+  const onTouchStart = e => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = e => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      nextSlide();
+    } else if (isRightSwipe) {
+      prevSlide();
+    }
+  };
+
+  // Reset and start autoplay
+  const resetAutoplay = useCallback(() => {
+    if (autoplayRef.current) {
+      clearInterval(autoplayRef.current);
+    }
+    autoplayRef.current = setInterval(() => {
+      nextSlide();
+    }, 10000);
+  }, [nextSlide]);
+
+  // Initialize autoplay
+  useEffect(() => {
+    resetAutoplay();
+    return () => {
+      if (autoplayRef.current) {
+        clearInterval(autoplayRef.current);
+      }
+    };
+  }, [resetAutoplay]);
+
+  // Pause autoplay on touch
+  useEffect(() => {
+    const slider = sliderRef.current;
+    if (!slider) return;
+
+    const pauseAutoplay = () => {
+      if (autoplayRef.current) {
+        clearInterval(autoplayRef.current);
+      }
+    };
+
+    const resumeAutoplay = () => {
+      resetAutoplay();
+    };
+
+    slider.addEventListener('touchstart', pauseAutoplay);
+    slider.addEventListener('touchend', resumeAutoplay);
+    slider.addEventListener('mouseenter', pauseAutoplay);
+    slider.addEventListener('mouseleave', resumeAutoplay);
+
+    return () => {
+      slider.removeEventListener('touchstart', pauseAutoplay);
+      slider.removeEventListener('touchend', resumeAutoplay);
+      slider.removeEventListener('mouseenter', pauseAutoplay);
+      slider.removeEventListener('mouseleave', resumeAutoplay);
+    };
+  }, [resetAutoplay]);
+
+  const sliderStyles = {
+    position: 'relative',
+    maxWidth: '1200px',
+    margin: '32px auto 0',
+    overflow: 'hidden',
+  };
+
+  const trackStyles = {
+    display: 'flex',
+    transition: noTransition ? 'none' : 'transform 0.6s ease-in-out',
+    transform: `translateX(-${currentSlide * 100}%)`,
+    touchAction: 'pan-y pinch-zoom',
   };
 
   return (
-    <Box position="relative" maxW="1200px" mx="auto" mt={8} overflow="hidden">
+    <Box style={sliderStyles}>
       <Box
         ref={sliderRef}
-        display="flex"
-        transition={noTransition ? 'none' : 'transform 0.6s ease-in-out'}
-        transform={`translateX(-${currentSlide * 100}%)`}
+        style={trackStyles}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
         onTransitionEnd={handleTransitionEnd}
       >
         {chunkedReviews.map((group, idx) => (
-          <Box key={idx} minWidth="100%" display="flex" justifyContent="center">
+          <Box
+            key={idx}
+            style={{
+              minWidth: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+            }}
+          >
             <SimpleGrid
               columns={{ base: 1, lg: 3 }}
               spacing={8}
@@ -96,7 +192,7 @@ const ReviewsSlider = () => {
                 review ? (
                   <ReviewCard key={cardIndex} review={review} />
                 ) : (
-                  <Box key={cardIndex} width="350px" />
+                  <Box key={cardIndex} style={{ width: '350px' }} />
                 )
               )}
             </SimpleGrid>
@@ -106,8 +202,8 @@ const ReviewsSlider = () => {
       <SliderArrow direction="prev" onClick={prevSlide} />
       <SliderArrow direction="next" onClick={nextSlide} />
       <PaginationDots
-        realSlidesCount={chunkedReviews.length - 2} // Subtract 2 for cloned slides
-        activeDot={currentSlide - 1} // Subtract 1 to account for first cloned slide
+        realSlidesCount={chunkedReviews.length - 2}
+        activeDot={currentSlide - 1}
         goToSlide={goToSlide}
       />
     </Box>

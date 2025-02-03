@@ -1,3 +1,4 @@
+// BenefitModal.jsx
 import {
   Modal,
   ModalOverlay,
@@ -11,8 +12,79 @@ import {
   Heading,
   Button,
   useColorModeValue,
+  Skeleton,
 } from '@chakra-ui/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { overlayColors } from './benefitsData';
+import { useState } from 'react';
+
+const MotionModalContent = motion(ModalContent);
+const MotionModalOverlay = motion(ModalOverlay);
+
+const modalVariants = {
+  hidden: {
+    opacity: 0,
+    scale: 0.8,
+  },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 0.3,
+      ease: [0.4, 0, 0.2, 1],
+    },
+  },
+  exit: {
+    opacity: 0,
+    scale: 0.8,
+    transition: {
+      duration: 0.2,
+    },
+  },
+};
+
+const overlayVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { duration: 0.2 },
+  },
+  exit: {
+    opacity: 0,
+    transition: { duration: 0.2 },
+  },
+};
+
+const contentVariants = {
+  hidden: { opacity: 0, x: 20 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      delay: 0.1,
+      duration: 0.3,
+    },
+  },
+};
+
+const PreloadedImage = ({ src, alt, ...props }) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  return (
+    <Box position="relative" {...props}>
+      <Skeleton isLoaded={isLoaded} h="100%" w="100%" fadeDuration={0.4}>
+        <Image
+          src={src}
+          alt={alt}
+          objectFit="cover"
+          h="100%"
+          w="100%"
+          onLoad={() => setIsLoaded(true)}
+        />
+      </Skeleton>
+    </Box>
+  );
+};
 
 const BenefitModal = ({
   isOpen,
@@ -28,106 +100,129 @@ const BenefitModal = ({
   const benefit = benefits[modalIndex];
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
-      <ModalOverlay
-        bg={modalIndex !== null ? overlayColors[modalIndex] : 'blackAlpha.600'}
-        backdropFilter="blur(2px)"
-      />
-      <ModalContent
-        maxW={{ base: '95vw', md: '80vw', lg: '900px' }}
-        maxH={{ base: '95vh', md: '85vh' }}
-        borderRadius="xl"
-        boxShadow="xl"
-        overflow="hidden"
-      >
-        {' '}
-        <ModalCloseButton
-          zIndex={2}
-          color="white"
-          bg="blackAlpha.400"
-          borderRadius="full"
-          size="lg"
-          _hover={{ bg: 'blackAlpha.600' }}
-        />
-        <Flex direction={{ base: 'column', md: 'row' }} h="100%">
-          {/* Image Section */}
-          <Box
-            position="relative"
-            w={{ base: '100%', md: '50%' }}
-            h={{ base: '35vh', md: '100%' }}
+    <AnimatePresence>
+      {isOpen && (
+        <Modal
+          isOpen={isOpen}
+          onClose={onClose}
+          isCentered
+          motionPreset="scale"
+          size="6xl"
+        >
+          <MotionModalOverlay
+            variants={overlayVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            bg={
+              modalIndex !== null ? overlayColors[modalIndex] : 'blackAlpha.600'
+            }
+            backdropFilter="blur(2px)"
+          />
+          <MotionModalContent
+            variants={modalVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            maxW={{ base: '95vw', md: '80vw', lg: '900px' }}
+            maxH={{ base: '90vh', md: '85vh' }}
+            h={{ base: 'auto', md: '600px' }}
+            borderRadius="xl"
+            boxShadow="xl"
+            overflow="hidden"
           >
-            <Image
-              src={benefit.image}
-              alt={benefit.title}
-              objectFit="cover"
-              h="100%"
-              w="100%"
+            <ModalCloseButton
+              zIndex={2}
+              color="white"
+              bg="blackAlpha.400"
+              borderRadius="full"
+              size="lg"
+              _hover={{ bg: 'blackAlpha.600' }}
             />
-          </Box>
-          {/* Content Section */}
-          <Flex
-            direction="column"
-            w={{ base: '100%', md: '50%' }}
-            bg={cardBg}
-            p={{ base: 6, md: 8 }}
-            justify="space-between"
-            align="center"
-            minH="100%"
-          >
-            {/* Title Section */}
-            <Flex direction="column" align="center" mb={4}>
-              <Text fontSize="3xl">{benefit.icon}</Text>
-              <Heading
-                size={{ base: 'lg', md: 'xl' }}
-                color={headingColor}
-                fontFamily="lato"
-                fontWeight="500"
-                textAlign="center"
+            <Flex direction={{ base: 'column', md: 'row' }} h="100%">
+              <Box
+                w="100%"
+                h={{ base: '300px', md: '100%' }}
+                maxH={{ base: '40vh', md: '100%' }}
               >
-                {benefit.title}
-              </Heading>
-            </Flex>
+                <PreloadedImage
+                  src={benefit.image}
+                  alt={benefit.title}
+                  h="100%"
+                />
+              </Box>
 
-            {/* Body Section */}
-            <ModalBody p={0}>
-              <Flex
-                align="center"
-                justify="center"
-                height="80%"
-                textAlign="center"
+              <Box
+                w="100%"
+                h={{ base: 'auto', md: '100%' }}
+                flex={{ base: '1', md: '0 0 50%' }}
               >
-                <Text
-                  fontWeight={{ base: '400', md: '300' }}
-                  fontSize={{ base: 'md', md: 'lg', lg: '2xl' }}
-                  fontFamily="lato"
-                  lineHeight="tall"
-                  color={textColor}
+                <motion.div
+                  variants={contentVariants}
+                  initial="hidden"
+                  animate="visible"
+                  style={{ height: '100%' }}
                 >
-                  {benefit.additional}
-                </Text>
-              </Flex>
-              {/* Button Section */}
-              <Flex w="full" justify="center" mt={6}>
-                <Button
-                  colorScheme="green"
-                  size="md"
-                  minW="120px"
-                  onClick={onClose}
-                  borderRadius="full"
-                  _hover={{
-                    transform: 'translateY(-2px)',
-                    boxShadow: 'lg',
-                  }}
-                  transition="all 0.2s"
-                >
-                  Close
-                </Button>
-              </Flex>
-            </ModalBody>
-          </Flex>
-        </Flex>
-      </ModalContent>
-    </Modal>
+                  <Flex
+                    direction="column"
+                    bg={cardBg}
+                    p={{ base: 6, md: 8 }}
+                    justify="space-between"
+                    h="100%"
+                  >
+                    <Box>
+                      <Flex direction="column" align="center" mb={6}>
+                        <Text fontSize="4xl" mb={4}>
+                          {benefit.icon}
+                        </Text>
+                        <Heading
+                          size={{ base: 'lg', md: 'xl' }}
+                          mb={{ base: '0px', md: '50px' }}
+                          color={headingColor}
+                          fontFamily="lato"
+                          fontWeight="500"
+                          textAlign="center"
+                        >
+                          {benefit.title}
+                        </Heading>
+                      </Flex>
+
+                      <Text
+                        fontWeight={{ base: '400', md: '300' }}
+                        fontSize={{ base: 'md', md: '2xl' }}
+                        fontFamily="lato"
+                        lineHeight="tall"
+                        color={textColor}
+                        textAlign="center"
+                      >
+                        {benefit.additional}
+                      </Text>
+                    </Box>
+
+                    <Flex justify="center" mt={6}>
+                      <Button
+                        colorScheme="green"
+                        size="lg"
+                        minW="120px"
+                        onClick={onClose}
+                        borderRadius="full"
+                        _hover={{
+                          transform: 'translateY(-2px)',
+                          boxShadow: 'lg',
+                        }}
+                        transition="all 0.2s"
+                      >
+                        Close
+                      </Button>
+                    </Flex>
+                  </Flex>
+                </motion.div>
+              </Box>
+            </Flex>
+          </MotionModalContent>
+        </Modal>
+      )}
+    </AnimatePresence>
   );
 };
 
