@@ -1,13 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Box, useMediaQuery, keyframes } from '@chakra-ui/react';
+import { Box, useMediaQuery } from '@chakra-ui/react';
 import scrollToTopImage from '../assets/images/leaf1.png';
-
-// Floating animation for desktop hover effect
-const float = keyframes`
-  0% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-  100% { transform: translateY(0); }
-`;
 
 const ScrollToTopButton = () => {
   const [showButton, setShowButton] = useState(false);
@@ -28,7 +21,6 @@ const ScrollToTopButton = () => {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // Briefly hide overlay effect on mobile press
     if (isMobile) {
       setPressed(true);
       setTimeout(() => setPressed(false), 200);
@@ -53,7 +45,7 @@ const ScrollToTopButton = () => {
       zIndex={1000}
       _hover={{
         opacity: 0.9,
-        animation: !isMobile ? `${float} 1.5s ease-in-out infinite` : 'none',
+        animation: !isMobile ? `float 1.5s ease-in-out infinite` : 'none',
       }}
       _active={{ opacity: isMobile ? 0 : 0.9 }}
       onClick={scrollToTop}
@@ -63,6 +55,11 @@ const ScrollToTopButton = () => {
         WebkitUserSelect: 'none',
         touchAction: 'none',
         userSelect: 'none',
+        '@keyframes float': {
+          '0%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
+          '100%': { transform: 'translateY(0)' },
+        },
       }}
     />
   );
