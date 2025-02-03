@@ -1,56 +1,22 @@
 import { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import { Box, useMediaQuery, keyframes } from '@chakra-ui/react';
 import scrollToTopImage from '../assets/images/leaf1.png';
 
-// Keyframes for the up and down animation
-const float = `
-  @keyframes float {
-    0% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-10px); /* Move up by 10px */
-    }
-    100% {
-      transform: translateY(0); /* Return to original position */
-    }
-  }
-`;
-
-const ScrollButton = styled.div`
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 50px;
-  height: 100px;
-  background-image: url(${scrollToTopImage});
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-  cursor: pointer;
-  display: ${({ show }) => (show === 'true' ? 'block' : 'none')};
-  transition: opacity 0.3s ease-in-out;
-  opacity: 0.5; /* Semi-transparent by default */
-  z-index: 1000;
-
-  &:hover {
-    opacity: 0.9; /* Less transparent on hover */
-    animation: float 1.5s ease-in-out infinite; /* Floating animation on hover */
-  }
-
-  ${float}/* Inject the keyframes */
+// Floating animation for desktop hover effect
+const float = keyframes`
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0); }
 `;
 
 const ScrollToTopButton = () => {
-  const [showButton, setShowButton] = useState('false');
+  const [showButton, setShowButton] = useState(false);
+  const [pressed, setPressed] = useState(false);
+  const [isMobile] = useMediaQuery('(max-width: 768px)');
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 300) {
-        setShowButton('true');
-      } else {
-        setShowButton('false');
-      }
+      setShowButton(window.scrollY > 300);
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -60,13 +26,46 @@ const ScrollToTopButton = () => {
   }, []);
 
   const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Briefly hide overlay effect on mobile press
+    if (isMobile) {
+      setPressed(true);
+      setTimeout(() => setPressed(false), 200);
+    }
   };
 
-  return <ScrollButton show={showButton} onClick={scrollToTop} />;
+  return (
+    <Box
+      position="fixed"
+      bottom="20px"
+      right="20px"
+      width="50px"
+      height="100px"
+      bgImage={`url(${scrollToTopImage})`}
+      bgSize="contain"
+      bgPosition="center"
+      bgRepeat="no-repeat"
+      cursor="pointer"
+      display={showButton ? 'block' : 'none'}
+      transition="opacity 0.3s ease-in-out"
+      opacity={pressed ? 0 : 0.5}
+      zIndex={1000}
+      _hover={{
+        opacity: 0.9,
+        animation: !isMobile ? `${float} 1.5s ease-in-out infinite` : 'none',
+      }}
+      _active={{ opacity: isMobile ? 0 : 0.9 }}
+      onClick={scrollToTop}
+      sx={{
+        WebkitTapHighlightColor: 'transparent',
+        WebkitTouchCallout: 'none',
+        WebkitUserSelect: 'none',
+        touchAction: 'none',
+        userSelect: 'none',
+      }}
+    />
+  );
 };
 
 export default ScrollToTopButton;

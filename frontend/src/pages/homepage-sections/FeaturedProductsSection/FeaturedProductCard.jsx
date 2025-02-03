@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Flex, Image, Text } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import CustomButton from '../../../components/CustomButton';
@@ -8,15 +8,36 @@ import '../../../assets/styles/card.css';
 const MotionBox = motion(Box);
 
 const FeaturedProductCard = ({ product, index, onToggleFlip }) => {
-  // Use a single boolean for this card's flip state
   const [isFlipped, setIsFlipped] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect if the user is on a mobile device
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const handleMouseEnter = () => {
-    setIsFlipped(true);
+    if (!isMobile) {
+      setIsFlipped(true);
+    }
   };
 
   const handleMouseLeave = () => {
-    setIsFlipped(false);
+    if (!isMobile) {
+      setIsFlipped(false);
+    }
+  };
+
+  const handleClick = () => {
+    if (isMobile) {
+      setIsFlipped(!isFlipped);
+    }
   };
 
   return (
@@ -25,7 +46,7 @@ const FeaturedProductCard = ({ product, index, onToggleFlip }) => {
       variants={cardVariants}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      onClick={onToggleFlip} // You can remove this if you only want hover functionality
+      onClick={handleClick} // Enable click-to-flip on mobile
       cursor="pointer"
     >
       <Box className={`card__inner ${isFlipped ? 'is-flipped' : ''}`}>

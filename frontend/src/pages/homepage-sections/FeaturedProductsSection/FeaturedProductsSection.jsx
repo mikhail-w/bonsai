@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, SimpleGrid, useColorModeValue } from '@chakra-ui/react';
+import { Box, Flex, useColorModeValue, Wrap, WrapItem } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import CustomButton from '../../../components/CustomButton';
 import CustomHeading from '../../../components/CustomHeading';
@@ -24,7 +24,6 @@ const FeaturedProductsSection = () => {
   return (
     <Box
       mt={50}
-      // mb={100}
       mb={{ base: '0', md: '100' }}
       py={16}
       textAlign="center"
@@ -45,25 +44,32 @@ const FeaturedProductsSection = () => {
 
         <motion.div
           variants={cardsContainerVariants}
-          onAnimationComplete={() => setShowButton(true)} // Set showButton to true after animation
+          onAnimationComplete={() => setShowButton(true)}
         >
-          <SimpleGrid
-            columns={{ base: 1, md: 2, lg: 3 }}
-            spacing={10}
+          {/* Responsive Layout for Cards */}
+          <Wrap
+            spacing={{ base: '30', md: '40' }}
             px={6}
-            justifyItems="center"
-            mt={30}
+            justify="center"
+            align="center"
+            shouldWrapChildren
           >
             {products.map((product, index) => (
-              <FeaturedProductCard
+              <WrapItem
                 key={index}
-                product={product}
-                index={index}
-                flipped={flipped[index]}
-                onToggleFlip={() => handleToggleFlip(index)}
-              />
+                flex={{ base: '1 1 100%', md: '1 1 45%', lg: '1 1 30%' }}
+                display="flex"
+                justifyContent="center"
+              >
+                <FeaturedProductCard
+                  product={product}
+                  index={index}
+                  flipped={flipped[index]}
+                  onToggleFlip={() => handleToggleFlip(index)}
+                />
+              </WrapItem>
             ))}
-          </SimpleGrid>
+          </Wrap>
 
           {/* Button appears only after animations are complete */}
           {showButton && (
