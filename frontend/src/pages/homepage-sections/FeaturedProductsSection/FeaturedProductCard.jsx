@@ -11,7 +11,6 @@ const FeaturedProductCard = ({ product, index, onToggleFlip }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Detect if the user is on a mobile device
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -22,20 +21,20 @@ const FeaturedProductCard = ({ product, index, onToggleFlip }) => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const handleMouseEnter = () => {
-    if (!isMobile) {
+  const handlePointerEnter = e => {
+    if (e.pointerType === 'mouse') {
       setIsFlipped(true);
     }
   };
 
-  const handleMouseLeave = () => {
-    if (!isMobile) {
+  const handlePointerLeave = e => {
+    if (e.pointerType === 'mouse') {
       setIsFlipped(false);
     }
   };
 
-  const handleClick = () => {
-    if (isMobile) {
+  const handlePointerUp = e => {
+    if (e.pointerType === 'touch') {
       setIsFlipped(!isFlipped);
     }
   };
@@ -44,10 +43,16 @@ const FeaturedProductCard = ({ product, index, onToggleFlip }) => {
     <MotionBox
       className="card"
       variants={cardVariants}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onClick={handleClick} // Enable click-to-flip on mobile
+      onPointerEnter={handlePointerEnter}
+      onPointerLeave={handlePointerLeave}
+      onPointerUp={handlePointerUp}
       cursor="pointer"
+      userSelect="none"
+      style={{
+        WebkitTapHighlightColor: 'transparent',
+        WebkitTouchCallout: 'none',
+        touchAction: 'none',
+      }}
     >
       <Box className={`card__inner ${isFlipped ? 'is-flipped' : ''}`}>
         {/* Front Face */}

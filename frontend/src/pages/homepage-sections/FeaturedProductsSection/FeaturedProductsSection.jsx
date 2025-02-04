@@ -13,7 +13,7 @@ import { products } from './products';
 
 const FeaturedProductsSection = () => {
   const [flipped, setFlipped] = useState(Array(products.length).fill(false));
-  const [showButton, setShowButton] = useState(false); // Track when animation is done
+  const [showButton, setShowButton] = useState(false);
 
   const handleToggleFlip = index => {
     setFlipped(prevFlipped =>
@@ -53,6 +53,7 @@ const FeaturedProductsSection = () => {
             justify="center"
             align="center"
             shouldWrapChildren
+            as="div"
           >
             {products.map((product, index) => (
               <WrapItem
@@ -60,6 +61,7 @@ const FeaturedProductsSection = () => {
                 flex={{ base: '1 1 100%', md: '1 1 45%', lg: '1 1 30%' }}
                 display="flex"
                 justifyContent="center"
+                as="div"
               >
                 <FeaturedProductCard
                   product={product}
