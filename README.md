@@ -55,15 +55,15 @@ ultimate platform for bonsai lovers. Visit the live application at
 - **Interactive Components:** Includes an elegant shopping cart, dynamic product
   filtering, and search functionality.
 - **PayPal API :** Secure payment API integration.
-- **Zen Quotes API :** to inspire users with peaceful quotes.
-- **OpenAI API :** for an intelligent chatbot experience.
-- **Weather API :** to check local conditions for optimal bonsai care.
+- **Zen Quotes API :** To inspire users with peaceful quotes.
+- **OpenAI API :** For an intelligent chatbot experience.
+- **Weather API :** To check local conditions for optimal bonsai care.
 - **Location Services:** Integration with Google Maps API to find nearby bonsai
-  nurseries, gardens, and clubs.
+  nurseries, gardens, and stores.
 - **3D and Augmented Reality:** View bonsai plants in 3D and Augmented Reality
   using Three.js, React Three Fiber and WebXR for a unique shopping experience.
-- **Blog Integration:** Create, Read and interact with blog post on bonsai care,
-  history, and art.
+- **Blog Integration:** Create, Read and interact with blog posts on bonsai
+  care, history, and art.
 
 - **Django-Powered Backend:** A robust and secure API backend built with Django
   and Django REST Framework.
@@ -209,12 +209,6 @@ Advanced 3D model interactions, augmented reality, Google Maps integration,
 plant identification, and a chatbot feature enhance the overall user experience.
 
 ## Installation
-
-### Prerequisites
-
-- Node.js
-- Python 3.9+
-- PostgreSQL
 
 ### Clone the Repository
 
