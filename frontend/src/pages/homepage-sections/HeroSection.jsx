@@ -109,7 +109,8 @@ const HeroSection = () => {
         <MotionBox variants={buttonFadeUp} initial="hidden" animate="visible">
           <CustomButton
             to="/products"
-            color="black"
+            color="rgb(111, 109, 109)"
+            fontWeight="400"
             bg="rgba(255, 255, 255, 0.9)"
             padding=".5rem 1.5rem"
             fontSize={{ base: '.67rem', md: '1rem', lg: '1.2rem' }}
