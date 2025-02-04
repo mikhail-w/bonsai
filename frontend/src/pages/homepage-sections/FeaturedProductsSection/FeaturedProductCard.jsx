@@ -51,7 +51,7 @@ const FeaturedProductCard = ({ product, index, onToggleFlip }) => {
       style={{
         WebkitTapHighlightColor: 'transparent',
         WebkitTouchCallout: 'none',
-        touchAction: 'none',
+        touchAction: 'auto',
       }}
     >
       <Box className={`card__inner ${isFlipped ? 'is-flipped' : ''}`}>

@@ -28,7 +28,7 @@ const BenefitCard = ({
       style={{
         WebkitTapHighlightColor: 'transparent',
         WebkitTouchCallout: 'none',
-        touchAction: 'none',
+        touchAction: 'auto',
         '--hover-bg-color': hoverColors[index].bg,
         '--hover-text-color': hoverColors[index].text,
         '--hover-heading-color': hoverColors[index].heading,
