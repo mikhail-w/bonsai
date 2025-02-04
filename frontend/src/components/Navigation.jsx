@@ -220,6 +220,12 @@ const Navigation = () => {
               boxShadow="md"
               zIndex="2" // Ensures hamburger is above the circle
               transition="all 0.3s ease-in-out" // Add transition to default state
+              userSelect="none"
+              style={{
+                WebkitTapHighlightColor: 'transparent',
+                WebkitTouchCallout: 'none',
+                touchAction: 'none',
+              }}
               _hover={{
                 transform: 'scale(1.09)',
                 boxShadow: '0 0 15px 5px rgba(255, 255, 255, 0.2)',

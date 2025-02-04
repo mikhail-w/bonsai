@@ -24,7 +24,11 @@ const BenefitCard = ({
       maxH="350px"
       minH="300px"
       className="holographic-card"
+      userSelect="none"
       style={{
+        WebkitTapHighlightColor: 'transparent',
+        WebkitTouchCallout: 'none',
+        touchAction: 'none',
         '--hover-bg-color': hoverColors[index].bg,
         '--hover-text-color': hoverColors[index].text,
         '--hover-heading-color': hoverColors[index].heading,
