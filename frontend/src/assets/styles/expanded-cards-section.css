@@ -68,6 +68,19 @@
   font-size: 2rem;
   font-weight: 100px;
   text-align: center;
+  opacity: 1;
+  transition: opacity 0.3s ease-out;
+}
+
+.vertical-text.hide {
+  opacity: 0;
+}
+
+/* Add this class for compressed cards */
+.compressed .vertical-text {
+  font-size: 1.4rem;
+  opacity: 0.6;
+  transition: font-size 0.3s ease-out, opacity 0.3s ease-out;
 }
 
 .horizontal-text {

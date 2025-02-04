@@ -1,73 +1,105 @@
-import { Suspense } from 'react';
+import { Suspense, memo } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Environment, OrbitControls } from '@react-three/drei';
 import { Center, useBreakpointValue, Box, Spinner } from '@chakra-ui/react';
 import Earth from '../../../public/Earth';
 import CustomHeading from '../../components/CustomHeading';
 
-// Modular Orbit Controls with Zoom Limits
-const CustomOrbitControls = ({ minDistance, maxDistance }) => {
-  return (
-    <OrbitControls
-      enableZoom={true}
-      minDistance={minDistance}
-      maxDistance={maxDistance}
-      enablePan={false} // Disable panning for a cleaner experience
-      enableRotate={true} // Allow rotating
-    />
-  );
+// Constants
+const ZOOM_LIMITS = {
+  MIN: 5.5,
+  MAX: 8,
+  DEFAULT: 8,
 };
 
-// Loading Spinner for the Earth Model
-const LoadingFallback = () => (
+const CONTAINER_SIZES = {
+  base: '300px',
+  sm: '400px',
+  md: '600px',
+  lg: '800px',
+};
+
+// Memoized OrbitControls component
+const CustomOrbitControls = memo(({ minDistance, maxDistance }) => (
+  <OrbitControls
+    enableZoom={true}
+    minDistance={minDistance}
+    maxDistance={maxDistance}
+    enablePan={false}
+    enableRotate={true}
+  />
+));
+
+CustomOrbitControls.displayName = 'CustomOrbitControls';
+
+// Memoized loading spinner component
+const LoadingFallback = memo(() => (
   <Center width="100%" height="100%">
-    <Spinner size="xl" color="teal.500" />
+    <Spinner size="xl" color="teal.500" thickness="4px" speed="0.8s" />
   </Center>
-);
+));
+
+LoadingFallback.displayName = 'LoadingFallback';
+
+// Earth canvas component
+const EarthCanvas = memo(({ minZoom, maxZoom }) => (
+  <Canvas
+    className="earthContainer"
+    camera={{ position: [0, 0, ZOOM_LIMITS.DEFAULT] }}
+    dpr={[1, 2]}
+    gl={{
+      antialias: true,
+      alpha: true,
+      preserveDrawingBuffer: true,
+      premultipliedAlpha: false,
+      // Prevent y-flip warning
+      pixelStorei: {
+        UNPACK_FLIP_Y_WEBGL: false,
+        UNPACK_PREMULTIPLY_ALPHA_WEBGL: false,
+      },
+    }}
+  >
+    <ambientLight intensity={1} />
+    <Earth />
+    <CustomOrbitControls minDistance={minZoom} maxDistance={maxZoom} />
+    <Environment preset="sunset" />
+  </Canvas>
+));
+
+EarthCanvas.displayName = 'EarthCanvas';
 
 // Main Globe Component
 const GlobeSection = () => {
-  // Responsive container size for the canvas
-  const containerSize = useBreakpointValue({
-    base: '300px', // Mobile devices
-    sm: '400px', // Small screens (e.g., tablets)
-    md: '600px', // Medium screens (e.g., small desktops)
-    lg: '800px', // Large screens
-  });
-
-  // Zoom limits
-  const minZoom = 5.5; // Minimum zoom level (Zoom out limit)
-  const maxZoom = 8; // Maximum zoom level (Zoom in limit)
+  const containerSize = useBreakpointValue(CONTAINER_SIZES);
 
   return (
-    <Box marginBottom={'100px'}>
+    <Box
+      marginBottom="100px"
+      sx={{
+        WebkitTapHighlightColor: 'transparent',
+        willChange: 'transform',
+        userSelect: 'none',
+      }}
+    >
       <Center
-        cursor={'pointer'}
         width={containerSize}
         height={containerSize}
         margin="auto"
+        position="relative"
+        role="region"
+        aria-label="Interactive 3D Earth Globe"
       >
-        {/* Chakra-based spinner outside of Canvas */}
-        <Suspense fallback={<LoadingFallback />}>
-          {/* R3F Canvas, containing only Three.js-compatible components */}
-          <Canvas
-            className="earthContainer"
-            camera={{ position: [0, 0, 8] }} // Default zoom level (adjust the Z value for zoom)
-          >
-            <ambientLight intensity={1} />
-            <Earth /> {/* Earth model */}
-            <CustomOrbitControls minDistance={minZoom} maxDistance={maxZoom} />
-            <Environment preset="sunset" />
-          </Canvas>
-        </Suspense>
+        <Box position="relative" width="100%" height="100%">
+          <Suspense fallback={<LoadingFallback />}>
+            <EarthCanvas minZoom={ZOOM_LIMITS.MIN} maxZoom={ZOOM_LIMITS.MAX} />
+          </Suspense>
+        </Box>
       </Center>
-      {/* Save the world text is regular HTML */}
-      {/* <SaveTheWorldText /> */}
-      <Center>
+      <Center marginTop="8">
         <CustomHeading>Save the World, plant a tree</CustomHeading>
       </Center>
     </Box>
   );
 };
 
-export default GlobeSection;
+export default memo(GlobeSection);

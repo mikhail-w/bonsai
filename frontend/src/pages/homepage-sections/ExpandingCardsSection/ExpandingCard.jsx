@@ -7,10 +7,25 @@ import '../../../assets/styles/expanded-cards-section.css';
 const MotionBox = chakra(motion.div);
 
 function ExpandingCard({ index, image, activeIndex, handleClick, isMobile }) {
+  const isAnyCardActive = activeIndex !== null;
+  const isEdgeCard = index === 0 || index === 5; // Assuming 6 cards total, adjust if different
+
+  // Optimize transition timing for edge cards on mobile
+  const mobileTransition = {
+    height: {
+      duration: isEdgeCard ? 0.4 : 0.6, // Faster for edge cards
+      ease: 'easeInOut',
+    },
+    flex: {
+      duration: isEdgeCard ? 0.4 : 0.6,
+      ease: 'easeInOut',
+    },
+  };
+
   return (
     <MotionBox
-      // Enable layout animations for smooth transitions
-      layout
+      layout="position" // Optimize layout animations
+      layoutId={`card-${index}`} // Help Framer track elements
       variants={cardVariants}
       custom={index}
       bgImage={`url(${image.url})`}
@@ -26,17 +41,19 @@ function ExpandingCard({ index, image, activeIndex, handleClick, isMobile }) {
       maxWidth="100vw"
       flex={isMobile ? 'none' : activeIndex === index ? 5 : 0.1}
       height={isMobile ? (activeIndex === index ? '300px' : '100px') : '80vh'}
-      // Adjust the transition values for mobile mode to be smoother.
       transition={
         isMobile
-          ? {
-              height: { duration: 0.8, ease: 'easeOut' },
-              flex: { duration: 0.8, ease: 'easeOut' },
-            }
+          ? mobileTransition
           : 'flex 1.5s cubic-bezier(0.25, 0.1, 0.25, 1), height 1.2s ease-in-out'
       }
       onClick={() => handleClick(index)}
-      willChange="height, flex"
+      willChange="transform, height, flex"
+      style={{
+        backfaceVisibility: 'hidden', // Optimize performance
+        WebkitBackfaceVisibility: 'hidden',
+        transform: 'translateZ(0)',
+        WebkitTransform: 'translateZ(0)',
+      }}
     >
       <Flex
         bg={
@@ -50,11 +67,22 @@ function ExpandingCard({ index, image, activeIndex, handleClick, isMobile }) {
         justify="center"
         color="white"
         p={4}
+        style={{
+          willChange: 'opacity, transform',
+          backfaceVisibility: 'hidden',
+          WebkitBackfaceVisibility: 'hidden',
+        }}
       >
         {activeIndex !== index && (
           <Text
-            style={{ fontWeight: 200 }}
-            className={isMobile ? 'horizontal-text' : 'vertical-text'}
+            style={{
+              fontWeight: 200,
+              willChange: 'opacity, transform',
+              transition: 'opacity 0.3s ease-out',
+            }}
+            className={`${isMobile ? 'horizontal-text' : 'vertical-text'} ${
+              isAnyCardActive ? 'hide' : ''
+            }`}
           >
             {image.title}
           </Text>
@@ -69,7 +97,10 @@ function ExpandingCard({ index, image, activeIndex, handleClick, isMobile }) {
         className={`card__title ${
           activeIndex === index ? 'card__title--active' : ''
         }`}
-        style={{ transitionDelay: activeIndex === index ? '.5s' : '0s' }}
+        style={{
+          transitionDelay: activeIndex === index ? '.3s' : '0s',
+          willChange: 'opacity, transform',
+        }}
       >
         <span className={`card__title-span card__title-span--${index + 1}`}>
           {image.title}
