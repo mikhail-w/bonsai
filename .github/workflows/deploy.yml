@@ -1,14 +1,11 @@
 name: Deploy to AWS S3
-
 on:
   push:
     branches:
       - main
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -20,13 +17,18 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          cd frontend  
+          cd frontend
           npm install
 
       - name: Build Project
         run: |
           cd frontend
           npm run build
+
+      - name: Debug Build Output
+        run: |
+          cd frontend
+          ls -la dist/
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -37,8 +39,11 @@ jobs:
 
       - name: Deploy index.html and assets to S3
         run: |
-          aws s3 cp frontend/dist/index.html s3://${{ secrets.AWS_S3_BUCKET }}/index.html
-          aws s3 sync frontend/dist/assets s3://${{ secrets.AWS_S3_BUCKET }}/assets
+          cd frontend
+          # Copy index.html with cache control settings
+          aws s3 cp dist/index.html s3://${{ secrets.AWS_S3_BUCKET }}/index.html --cache-control "no-cache,no-store,must-revalidate"
+          # Sync only the assets directory
+          aws s3 sync dist/assets/ s3://${{ secrets.AWS_S3_BUCKET }}/assets/ --cache-control "public,max-age=31536000,immutable"
 
       - name: Invalidate CloudFront Cache
         run: |
