@@ -1,9 +1,9 @@
-// src/components/Navigation/HamburgerMenu.jsx
 import React from 'react';
-import { Box, Avatar } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import Hamburger from 'hamburger-react';
 import { Link as RouterLink } from 'react-router-dom';
+import { Avatar } from '@chakra-ui/react';
 import { cleanMediaPath } from '../../utils/urlUtils';
 
 const HamburgerMenu = ({
@@ -35,7 +35,7 @@ const HamburgerMenu = ({
       right={8}
       top={10}
     >
-      {/* Animated Radiating Circle */}
+      {/* Animated Circle Background */}
       <motion.div
         initial={{ scale: 0 }}
         animate={{ scale: isOpen ? 15 : 0 }}
@@ -55,6 +55,7 @@ const HamburgerMenu = ({
 
       {/* Hamburger Button */}
       <Box
+        position="relative"
         width="50px"
         height="50px"
         borderRadius="full"
@@ -63,24 +64,21 @@ const HamburgerMenu = ({
         alignItems="center"
         justifyContent="center"
         boxShadow="md"
-        zIndex="2"
-        transition="all 0.3s ease-in-out"
+        zIndex={1001}
         _hover={{
-          transform: 'scale(1.09)',
-          boxShadow: '0 0 15px 5px rgba(255, 255, 255, 0.2)',
+          transform: 'scale(1.05)',
         }}
       >
         <Hamburger
           toggled={isOpen}
           toggle={toggleMenu}
-          rounded
-          easing="ease-in"
+          size={20}
+          duration={0.3}
           color="#333333"
-          zIndex="2000"
         />
       </Box>
 
-      {/* Show avatar when logged in */}
+      {/* User Avatar */}
       {userInfo && isOpen && isCircleAnimationDone && (
         <RouterLink to="/profile">
           <Avatar
@@ -97,9 +95,9 @@ const HamburgerMenu = ({
             }
             size="md"
             position="absolute"
-            top="0px"
+            top="0"
             right="70px"
-            zIndex="5"
+            zIndex={1001}
           />
         </RouterLink>
       )}
