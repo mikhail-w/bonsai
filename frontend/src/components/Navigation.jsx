@@ -22,6 +22,7 @@ import { logout } from '../actions/userActions';
 import { clearCart } from '../actions/cartActions';
 import SearchBar from './SearchBar';
 import { motion } from 'framer-motion';
+import NavigationCircle from './NavigationCircle';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -191,22 +192,7 @@ const Navigation = () => {
             top={10}
           >
             {/* Radiating Circle */}
-            <motion.div
-              initial={{ scale: 0 }} // Initially scaled down
-              animate={{ scale: isOpen ? 15 : 0 }} // Slightly reduced circle size
-              transition={{ duration: 0.8, ease: 'easeInOut' }} // Smooth transition
-              style={{
-                position: 'absolute',
-                width: '50px',
-                height: '50px',
-                borderRadius: '50%',
-                background: isOpen
-                  ? linkColors[hoveredLink]
-                  : 'rgba(116, 214, 128, 1)',
-                backdropFilter: 'blur(5px)',
-                zIndex: 1, // Below the hamburger button
-              }}
-            />
+            <NavigationCircle isOpen={isOpen} hoveredLink={hoveredLink} />
 
             {/* Hamburger Button */}
             <Box

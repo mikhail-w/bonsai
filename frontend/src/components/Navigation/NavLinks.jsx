@@ -1,4 +1,3 @@
-// src/components/Navigation/NavLinks.jsx
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Box, Flex, Badge } from '@chakra-ui/react';
@@ -16,16 +15,22 @@ const NavLinks = ({
   setIsShopHovered,
   setHoveredLink,
 }) => {
-  // Helper to compute positions in an arc
-  const getLinkPosition = (index, total, radius) => {
-    const angleOffset = Math.PI * 0.6; // Offset angle
-    const angle = angleOffset + (index / total) * (Math.PI * 0.5); // Spread over a 90° arc
-    const x = radius * Math.cos(angle);
-    const y = radius * Math.sin(angle);
-    return { x, y };
+  const getLinkPosition = (index, total) => {
+    // Reduced radius to keep items closer to center
+    const radius = 80;
+    // Adjust angle spread for tighter clustering
+    const angleSpread = 100;
+    const startAngle = -50;
+
+    const angle = startAngle + (index / (total - 1)) * angleSpread;
+    const angleInRadians = (angle * Math.PI) / 180;
+
+    return {
+      x: radius * Math.cos(angleInRadians),
+      y: radius * Math.sin(angleInRadians),
+    };
   };
 
-  // Return the appropriate icon based on label
   const getIcon = label => {
     switch (label) {
       case 'Shop':
@@ -40,9 +45,10 @@ const NavLinks = ({
   };
 
   return (
-    <Box>
+    <Box position="fixed" right="32px" top="40px" zIndex={999}>
       {navLinks.map((link, index) => {
-        const { x, y } = getLinkPosition(index, navLinks.length, 320);
+        const { x, y } = getLinkPosition(index, navLinks.length);
+
         return (
           <motion.div
             key={link.label}
@@ -50,19 +56,20 @@ const NavLinks = ({
             animate={{
               opacity: 1,
               scale: 1,
-              x: `${x}px`,
-              y: `${y}px`,
+              x,
+              y,
             }}
-            transition={{ duration: 0.5, ease: 'easeInOut' }}
+            transition={{
+              duration: 0.3,
+              delay: index * 0.1,
+            }}
             style={{
               position: 'absolute',
-              zIndex: 5,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '8px',
+              zIndex: 1000,
+              transformOrigin: 'center',
             }}
             onMouseEnter={() => setHoveredLink(link.label)}
+            onMouseLeave={() => setHoveredLink('default')}
           >
             {link.label === 'Shop' ? (
               <Box
@@ -72,20 +79,19 @@ const NavLinks = ({
               >
                 <RouterLink to={link.url} onClick={handleLinkClick}>
                   <Flex
-                    fontFamily="lato"
-                    color="#333333"
-                    fontSize="xl"
-                    _hover={{ color: 'gray.800', bg: 'yellow' }}
                     bg="white"
-                    p="0.5rem 1rem"
+                    color="#333333"
+                    px="3"
+                    py="1.5"
                     borderRadius="full"
-                    boxShadow="md"
-                    display="flex"
                     alignItems="center"
-                    gap="0.5rem"
+                    gap="2"
+                    boxShadow="md"
+                    _hover={{ bg: 'yellow.100' }}
+                    fontSize="sm"
                   >
                     {getIcon(link.label)}
-                    {link.label}
+                    <span>{link.label}</span>
                   </Flex>
                 </RouterLink>
                 {isShopHovered && (
@@ -96,76 +102,56 @@ const NavLinks = ({
                 )}
               </Box>
             ) : link.label === 'Blog' ? (
-              <Flex
-                as="button"
-                onClick={handleBlogClick}
-                fontSize="xl"
-                fontFamily="lato"
-                color="#333333"
-                _hover={{ color: 'gray.800', bg: 'yellow' }}
-                bg="white"
-                p="0.5rem 1rem"
-                borderRadius="full"
-                boxShadow="md"
-                display="flex"
-                alignItems="center"
-                gap="0.5rem"
-              >
-                {getIcon(link.label)}
-                {link.label}
-              </Flex>
-            ) : link.action ? (
-              <RouterLink to={link.url || '#'} onClick={handleLinkClick}>
+              <Box onClick={handleBlogClick}>
                 <Flex
-                  as="button"
-                  onClick={link.action}
-                  fontSize="xl"
-                  fontFamily="lato"
-                  color="#333333"
-                  _hover={{ color: 'gray.800', bg: 'yellow' }}
                   bg="white"
-                  p="0.5rem 1rem"
+                  color="#333333"
+                  px="3"
+                  py="1.5"
                   borderRadius="full"
-                  boxShadow="md"
-                  display="flex"
                   alignItems="center"
-                  gap="0.5rem"
+                  gap="2"
+                  boxShadow="md"
+                  cursor="pointer"
+                  _hover={{ bg: 'yellow.100' }}
+                  fontSize="sm"
                 >
                   {getIcon(link.label)}
-                  {link.label}
+                  <span>{link.label}</span>
                 </Flex>
-              </RouterLink>
+              </Box>
             ) : (
-              <RouterLink to={link.url} onClick={handleLinkClick}>
+              <Box
+                as={link.action ? 'button' : RouterLink}
+                to={link.url}
+                onClick={link.action || handleLinkClick}
+              >
                 <Flex
-                  fontSize="xl"
-                  fontFamily="lato"
-                  color="#333333"
-                  _hover={{ color: 'gray.800', bg: 'yellow' }}
                   bg="white"
-                  p="0.5rem 1rem"
+                  color="#333333"
+                  px="3"
+                  py="1.5"
                   borderRadius="full"
-                  boxShadow="md"
-                  display="flex"
                   alignItems="center"
-                  gap="0.5rem"
+                  gap="2"
+                  boxShadow="md"
+                  _hover={{ bg: 'yellow.100' }}
+                  fontSize="sm"
                 >
                   {getIcon(link.label)}
-                  {link.label}
-                  {link.label === 'Cart' &&
-                    cartItems &&
-                    cartItems.length > 0 && (
-                      <Badge
-                        colorScheme="green"
-                        borderRadius="full"
-                        px={2}
-                        ml={2}
-                      >
-                        {cartItems.reduce((acc, item) => acc + item.qty, 0)}
-                      </Badge>
-                    )}
+                  <span>{link.label}</span>
+                  {link.label === 'Cart' && cartItems?.length > 0 && (
+                    <Badge
+                      colorScheme="green"
+                      borderRadius="full"
+                      px="2"
+                      fontSize="xs"
+                    >
+                      {cartItems.reduce((acc, item) => acc + item.qty, 0)}
+                    </Badge>
+                  )}
                 </Flex>
-              </RouterLink>
+              </Box>
             )}
           </motion.div>
         );

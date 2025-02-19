@@ -248,18 +248,30 @@ AWS_S3_CUSTOM_DOMAIN=your_s3_custom_domain
   <img src="./frontend/src/assets/images/readme/readme009.png" alt="Advanced 3D Model Interactions" width="80%">
 </div>
 
+<<<<<<< HEAD
 ### **Blog Integration**
 
 <div align="center">
   <img src="./frontend/src/assets/images/readme/readme0010b.png" alt="Google Maps Integration" width="80%">
 </div>
 
+=======
+>>>>>>> main
 ### **Google Maps Integration**
 
 <div align="center">
   <img src="./frontend/src/assets/images/readme/readme0010a.png" alt="Google Maps Integration" width="80%">
 </div>
 
+<<<<<<< HEAD
+=======
+### **Blog Integration**
+
+<div align="center">
+  <img src="./frontend/src/assets/images/readme/readme0010b.png" alt="Google Maps Integration" width="80%">
+</div>
+
+>>>>>>> main
 ### **Plant and Image Identification**
 
 <div align="center">
