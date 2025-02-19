@@ -1,9 +1,15 @@
-// src/components/Navigation/ShopSubmenu.jsx
-import React from 'react';
 import { Box, Link } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
 
-const ShopSubmenu = ({ submenuLinks, setIsShopHovered }) => {
+const ShopSubmenu = ({
+  isShopHovered,
+  isMobile,
+  submenuLinks,
+  handleLinkClick,
+  setIsShopHovered,
+}) => {
+  if (!(isShopHovered || isMobile)) return null;
+
   return (
     <Box
       position="absolute"
@@ -12,7 +18,7 @@ const ShopSubmenu = ({ submenuLinks, setIsShopHovered }) => {
       display="flex"
       gap="10px"
       bg="transparent"
-      p="1rem"
+      padding="1rem"
       zIndex="1000"
       onMouseEnter={() => setIsShopHovered(true)}
       onMouseLeave={() => setIsShopHovered(false)}
@@ -22,6 +28,7 @@ const ShopSubmenu = ({ submenuLinks, setIsShopHovered }) => {
           key={submenuLink.label}
           as={RouterLink}
           to={submenuLink.url}
+          onClick={handleLinkClick}
           fontSize="sm"
           bg="white"
           borderRadius="full"
@@ -29,7 +36,7 @@ const ShopSubmenu = ({ submenuLinks, setIsShopHovered }) => {
           color="#333333"
           display="flex"
           flexDirection="row"
-          p="0.5rem 1rem"
+          padding="0.5rem 1rem"
           _hover={{ color: 'gray.800', bg: 'yellow' }}
         >
           {submenuLink.label}

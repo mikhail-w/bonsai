@@ -1,30 +1,32 @@
-// src/components/Navigation/Navigation.jsx
-import React, { useEffect, useRef, useState } from 'react';
-import { Box, Flex } from '@chakra-ui/react';
+import { useEffect, useRef, useState } from 'react';
+import { Box, Flex, useBreakpointValue } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useToast } from '@chakra-ui/react';
 import { logout } from '../../actions/userActions';
 import { clearCart } from '../../actions/cartActions';
+import { getLinkPosition } from './navigationUtils';
 
 import Logo from './Logo';
-import HamburgerMenu from './HamburgerMenu';
-import NavLinks from './NavLinks';
-import SearchBar from '../SearchBar';
+import MenuButton from './MenuButton';
+import UserAvatar from './UserAvatar';
+import NavigationCircle from './NavigationCircle';
+import ShopSubmenu from './ShopSubmenu';
+import NavigationLink from './NavigationLink';
+import SearchBar from './SearchBar';
 import ColorModeSwitcher from '../ColorModeSwitcher';
-
-// Import images
-import logo from '../../assets/images/logo.png';
-import logo_white from '../../assets/images/logo_white.png';
 
 const Navigation = () => {
   // Local state
+  const isMobile = useBreakpointValue({ base: true, md: false });
   const [isOpen, setIsOpen] = useState(false);
   const [isCircleAnimationDone, setIsCircleAnimationDone] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isShopHovered, setIsShopHovered] = useState(false);
   const [hoveredLink, setHoveredLink] = useState('default');
   const menuRef = useRef(null);
+  const location = useLocation();
 
   // Redux & router hooks
   const dispatch = useDispatch();
@@ -35,9 +37,6 @@ const Navigation = () => {
   // Redux state
   const { userInfo } = useSelector(state => state.userLogin);
   const { cartItems } = useSelector(state => state.cart);
-
-  // Choose the logo based on scroll and route
-  const logoSrc = pathname === '/' && !scrolled ? logo_white : logo;
 
   // Toggle the menu and handle the circle animation timing
   const toggleMenu = () => {
@@ -101,6 +100,14 @@ const Navigation = () => {
     { label: 'Essentials', url: '/essentials' },
   ];
 
+  // Reset menu state when route changes
+  useEffect(() => {
+    setIsOpen(false);
+    setIsCircleAnimationDone(false);
+    setIsShopHovered(false);
+    setHoveredLink('default');
+  }, [location.pathname]);
+
   // Close the menu when clicking outside
   useEffect(() => {
     const handleClickOutside = event => {
@@ -128,57 +135,104 @@ const Navigation = () => {
 
   return (
     <Box ref={menuRef}>
-      <Flex>
-        <Logo logoSrc={logoSrc} />
-        <HamburgerMenu
-          isOpen={isOpen}
-          toggleMenu={toggleMenu}
-          hoveredLink={hoveredLink}
-          setHoveredLink={setHoveredLink}
-          isCircleAnimationDone={isCircleAnimationDone}
-          userInfo={userInfo}
-        />
-        {isOpen && isCircleAnimationDone && (
-          <NavLinks
-            navLinks={navLinks}
-            submenuLinks={submenuLinks}
-            handleLinkClick={handleLinkClick}
-            handleBlogClick={handleBlogClick}
-            cartItems={cartItems}
-            isShopHovered={isShopHovered}
-            setIsShopHovered={setIsShopHovered}
-            setHoveredLink={setHoveredLink}
-          />
-        )}
-        {isOpen && isCircleAnimationDone && (
-          <>
-            <Box
-              position="absolute"
-              width={200}
-              top={-10}
-              right={100}
-              display="flex"
-              alignItems="center"
-              mt="2rem"
-              zIndex={3000}
-            >
-              <SearchBar />
-            </Box>
-            <Box
-              position="absolute"
-              width={200}
-              top={10}
-              right={-150}
-              display="flex"
-              alignItems="center"
-              mt="2rem"
-              zIndex={3000}
-            >
-              <ColorModeSwitcher />
-            </Box>
-          </>
-        )}
-      </Flex>
+      <Box>
+        <Flex>
+          <Logo pathname={pathname} scrolled={scrolled} />
+
+          <Box
+            position="fixed"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            zIndex="10"
+            right={8}
+            top={10}
+          >
+            <NavigationCircle isOpen={isOpen} hoveredLink={hoveredLink} />
+            <MenuButton isOpen={isOpen} toggleMenu={toggleMenu} />
+
+            {userInfo && isOpen && isCircleAnimationDone && (
+              <UserAvatar userInfo={userInfo} />
+            )}
+
+            {isOpen && isCircleAnimationDone && (
+              <Box>
+                {navLinks.map((link, index) => {
+                  const { x, y } = getLinkPosition(index, navLinks.length, 320);
+
+                  return (
+                    <motion.div
+                      key={link.label}
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{
+                        opacity: isOpen ? 1 : 0,
+                        scale: isOpen ? 1 : 0,
+                        x: isOpen ? `${x}px` : '0px',
+                        y: isOpen ? `${y}px` : '0px',
+                      }}
+                      transition={{ duration: 0.5, ease: 'easeInOut' }}
+                      style={{
+                        position: 'absolute',
+                        zIndex: 5,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        margin: '8px',
+                      }}
+                      onMouseEnter={() => setHoveredLink(link.label)}
+                    >
+                      <NavigationLink
+                        link={link}
+                        cartItems={cartItems}
+                        handleLinkClick={handleLinkClick}
+                        handleBlogClick={handleBlogClick}
+                        isShopHovered={isShopHovered}
+                        setIsShopHovered={setIsShopHovered}
+                        isMobile={isMobile}
+                        submenuLinks={submenuLinks}
+                      />
+                      {link.label === 'Shop' && (
+                        <ShopSubmenu
+                          isShopHovered={isShopHovered}
+                          setIsShopHovered={setIsShopHovered}
+                          isMobile={isMobile}
+                          submenuLinks={submenuLinks}
+                          handleLinkClick={handleLinkClick}
+                        />
+                      )}
+                    </motion.div>
+                  );
+                })}
+
+                <Box
+                  position="absolute"
+                  width={200}
+                  top={-10}
+                  right={160}
+                  display="flex"
+                  alignItems="center"
+                  mt="2rem"
+                  zIndex={3000}
+                >
+                  <SearchBar />
+                </Box>
+                <Box
+                  position="absolute"
+                  width={200}
+                  top={10}
+                  right={-150}
+                  display="flex"
+                  alignItems="center"
+                  mt="2rem"
+                  zIndex={3000}
+                >
+                  <ColorModeSwitcher />
+                </Box>
+              </Box>
+            )}
+          </Box>
+        </Flex>
+      </Box>
     </Box>
   );
 };
