@@ -24,7 +24,7 @@ const ProductDetails = ({ product }) => (
     <Text fontSize={{ base: 'xl', md: '2xl' }} fontWeight="bold">
       ${product.price}
     </Text>
-    <Text lineHeight="tall" fontSize={{ base: 'md', md: 'lg' }}>
+    <Text lineHeight="tall" fontSize={{ base: 'md', md: 'md', lg: 'lg' }}>
       {product.description}
     </Text>
   </VStack>
