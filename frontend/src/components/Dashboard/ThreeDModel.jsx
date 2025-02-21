@@ -3,6 +3,7 @@ import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { useColorModeValue, Box } from '@chakra-ui/react';
+import Loader from '../Loader';
 
 const Model = forwardRef(({ url }, ref) => {
   const { scene } = useGLTF(url);
@@ -96,7 +97,7 @@ export default function ThreeDModel() {
         <Suspense
           fallback={
             <Html center>
-              <div>Loading...</div>
+              <Loader />
             </Html>
           }
         >
