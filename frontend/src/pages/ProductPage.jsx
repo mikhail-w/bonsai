@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Box, SimpleGrid } from '@chakra-ui/react';
+import { Container, Box, Grid, GridItem } from '@chakra-ui/react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatchSelector } from '../hooks/useDispatchSelector';
 import {
@@ -64,19 +64,31 @@ const ProductPage = () => {
             <Box mb={10}>
               <BackButton />
             </Box>
-            <SimpleGrid columns={{ base: 1, md: 3 }} spacing={10} mb={10}>
-              <ProductImageAndButtons
-                image={productDetails.product.image}
-                name={productDetails.product.name}
-              />
-              <ProductDetails product={productDetails.product} />
-              <ProductPurchaseOptions
-                product={productDetails.product}
-                qty={qty}
-                setQty={setQty}
-                addToCartHandler={addToCartHandler}
-              />
-            </SimpleGrid>
+            <Grid
+              templateColumns={{ base: '1fr', md: 'repeat(3, 1fr)' }}
+              gap={{ base: 8, md: 10 }}
+              mb={10}
+            >
+              <GridItem>
+                <ProductImageAndButtons
+                  image={productDetails.product.image}
+                  name={productDetails.product.name}
+                />
+              </GridItem>
+              <GridItem>
+                <Box position="relative">
+                  <ProductDetails product={productDetails.product} />
+                </Box>
+              </GridItem>
+              <GridItem>
+                <ProductPurchaseOptions
+                  product={productDetails.product}
+                  qty={qty}
+                  setQty={setQty}
+                  addToCartHandler={addToCartHandler}
+                />
+              </GridItem>
+            </Grid>
             <ProductReviews
               product={productDetails.product}
               userInfo={userLogin.userInfo}

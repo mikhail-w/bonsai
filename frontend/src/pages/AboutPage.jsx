@@ -63,8 +63,7 @@ const teamMembers = [
       'Passionate about designing and implementing scalable, high-performance backend solutions that drive seamless user experiences and robust system architecture.',
     linkedIn:
       'https://www.linkedin.com/in/mourad-mourad-ba93aa314?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BjJs8QWxnRlGWJiA3sAOtBw%3D%3D',
-    github:
-      'https://www.linkedin.com/in/mourad-mourad-ba93aa314?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BjJs8QWxnRlGWJiA3sAOtBw%3D%3D',
+    github: 'https://github.com/mouradImourad',
     image: t5,
   },
 ];
