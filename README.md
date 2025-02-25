@@ -218,7 +218,7 @@ AWS_S3_CUSTOM_DOMAIN=your_s3_custom_domain
 ### **AWS 3 Tier Architecture Diagram**
 
 <div align="center">
-  <img src="./frontend/src/assets/images/readme/mwbonsai_architecture.svg" alt="Chatbot Integration" width="80%">
+  <img src="./frontend/src/assets/images/readme/mwbonsai_architecture.png" alt="Chatbot Integration" width="80%">
 </div>
    <br><br><br>
 
