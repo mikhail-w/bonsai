@@ -27,6 +27,7 @@ const defaultCenter = {
 
 const mapOptions = {
   disableDefaultUI: false,
+  zoomControl: true,
   gestureHandling: 'greedy',
   clickableIcons: false,
   zoom: 9,
