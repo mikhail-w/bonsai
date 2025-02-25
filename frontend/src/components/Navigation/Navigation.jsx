@@ -124,7 +124,7 @@ const Navigation = () => {
 
   // Update “scrolled” state based on window scroll position
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 0);
+    const handleScroll = () => setScrolled(window.scrollY > 650);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);

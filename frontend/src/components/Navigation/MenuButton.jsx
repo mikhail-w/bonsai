@@ -28,7 +28,9 @@ const MenuButton = ({ isOpen, toggleMenu }) => {
       <Hamburger
         toggled={isOpen}
         toggle={toggleMenu}
+        direction="right"
         rounded
+        size={25}
         easing="ease-in"
         color="#333333"
         zIndex="2000"
