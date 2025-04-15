@@ -129,8 +129,8 @@ pip install -r requirements.txt
 ```bash
 sudo -u postgres psql
 CREATE DATABASE bonsai_store;
-CREATE USER admin WITH PASSWORD 'password';
-ALTER USER admin WITH SUPERUSER CREATEROLE CREATEDB;
+CREATE USER postgres WITH PASSWORD 'password';
+ALTER USER postgres WITH SUPERUSER CREATEROLE CREATEDB;
 ```
 
 ### **Apply Migrations & Load Data**
@@ -138,8 +138,29 @@ ALTER USER admin WITH SUPERUSER CREATEROLE CREATEDB;
 ```bash
 python manage.py makemigrations
 python manage.py migrate
-python manage.py loaddata users.json products.json posts.json reviews.json comments.json
 ```
+
+**Important Note on Data Loading Order:**
+When loading fixtures, you must follow this specific order to maintain referential integrity:
+
+```bash
+# First load users (since other models depend on them)
+python manage.py loaddata users.json
+
+# Then load products
+python manage.py loaddata products.json
+
+# Then load posts
+python manage.py loaddata posts.json
+
+# Then load reviews (which depend on users and products)
+python manage.py loaddata reviews.json
+
+# Finally load comments (which depend on users and posts)
+python manage.py loaddata comments.json
+```
+
+**Note:** If you encounter foreign key constraint errors, ensure that the user IDs in your fixture files match the actual user IDs in your database. The reviews.json file should only reference user IDs that exist in your users.json file.
 
 ### **Run the Server**
 
@@ -175,7 +196,7 @@ OPENAI_API_KEY=your_openai_api_key
 DJANGO_SECRET_KEY=your_django_secret_key
 DJANGO_ALLOWED_HOSTS=your_django_allowed_hosts
 DJANGO_DEBUG=True
-DB_USER=admin
+DB_USER=postgres
 DB_PASSWORD=password
 DB_NAME=bonsai_store
 DB_HOST=localhost
