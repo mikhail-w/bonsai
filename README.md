@@ -106,68 +106,6 @@ Before setting up the project, ensure you have the following installed:
 git clone https://github.com/mikhail-w/bonsai.git
 cd bonsai
 ```
-
-### **Frontend Setup**
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-### **Backend Setup**
-
-```bash
-cd backend
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
-
-### **Setup Database**
-
-```bash
-sudo -u postgres psql
-CREATE DATABASE bonsai_store;
-CREATE USER postgres WITH PASSWORD 'password';
-ALTER USER postgres WITH SUPERUSER CREATEROLE CREATEDB;
-```
-
-### **Apply Migrations & Load Data**
-
-```bash
-python manage.py makemigrations
-python manage.py migrate
-```
-
-**Important Note on Data Loading Order:**
-When loading fixtures, you must follow this specific order to maintain referential integrity:
-
-```bash
-# First load users (since other models depend on them)
-python manage.py loaddata users.json
-
-# Then load products
-python manage.py loaddata products.json
-
-# Then load posts
-python manage.py loaddata posts.json
-
-# Then load reviews (which depend on users and products)
-python manage.py loaddata reviews.json
-
-# Finally load comments (which depend on users and posts)
-python manage.py loaddata comments.json
-```
-
-**Note:** If you encounter foreign key constraint errors, ensure that the user IDs in your fixture files match the actual user IDs in your database. The reviews.json file should only reference user IDs that exist in your users.json file.
-
-### **Run the Server**
-
-```bash
-python manage.py runserver
-```
-
 ---
 
 ## 📂 Environment Variables
@@ -209,6 +147,98 @@ AWS_S3_CUSTOM_DOMAIN=your_s3_custom_domain
 ```
 
 ---
+
+### **Frontend Setup**
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+### **Backend Setup**
+
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+### **Setup Database**
+
+```bash
+sudo -u postgres psql
+CREATE DATABASE bonsai_store;
+CREATE USER postgres WITH PASSWORD 'password';
+ALTER USER postgres WITH SUPERUSER CREATEROLE CREATEDB;
+```
+
+### **Apply Migrations & Load Data**
+
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
+
+**Important Note on Data Loading Order:**
+When loading fixtures, you must follow this specific order to maintain referential integrity:
+
+```bash
+
+# First load users (since other models depend on them)
+python manage.py loaddata users.json
+
+# Then load products
+python manage.py loaddata products.json
+
+# Then load posts
+python manage.py loaddata posts.json
+
+# Then load reviews (which depend on users and products)
+python manage.py loaddata reviews.json
+
+# Finally load comments (which depend on users and posts)
+python manage.py loaddata comments.json
+```
+
+**Note:** If you encounter foreign key constraint errors, ensure that the user IDs in your fixture files match the actual user IDs in your database. The reviews.json file should only reference user IDs that exist in your users.json file.
+
+### **Create Django Superuser**
+
+To access the Django admin panel, you need to create a superuser account:
+
+```bash
+python manage.py createsuperuser
+```
+
+Follow the prompts to set up your admin account:
+- Enter a username (e.g., 'admin')
+- Provide an email address
+- Create a strong password
+
+Once created, you can access the Django admin panel at:
+`http://127.0.0.1:8000/admin/`
+
+The admin panel gives you access to manage:
+- Users and User Profiles
+- Products
+- Reviews
+- Orders and Order Items
+- Shipping Addresses
+- Blog Posts
+  
+
+
+
+
+### **Run the Server**
+
+```bash
+python manage.py runserver
+```
+
+
 
 ### Notes:
 
